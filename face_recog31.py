@@ -1,3 +1,4 @@
+import time
 from tkinter import *
 import customtkinter
 import mysql.connector
@@ -11,8 +12,8 @@ import warnings
 import numpy as np
 import onnxruntime as rt
 import cv2
-from tkinter import ttk
-import Image, ImageTk
+from tkinter import ttk, messagebox
+
 
 class realpredict:
     def __init__(self, root):
@@ -20,7 +21,7 @@ class realpredict:
         root.state('zoomed')
         self.root.title("Attendance System")
         self.root.iconbitmap("img\\saslog.ico")
-
+        self.cam_start=1
         img = Image.open("img\\pexels-ben-mack-6775241.jpg")
         img = img.resize((1530, 990), Image.Resampling.LANCZOS)
         self.photoimg = ImageTk.PhotoImage(img)
@@ -42,12 +43,11 @@ class realpredict:
         self.photoimg3 = ImageTk.PhotoImage(img2)
 
         trdlbl = Label(self.root, image=self.photoimg3)
-        trdlbl.place(x=620, y=0, width=300, height=100)
+        trdlbl.place(x=640, y=0, width=300, height=100)
 
         head = Label(self.root, text="ATTENDANCE REPORT", font=("Tahoma", 25, "bold"), bg="black", fg="white")
-        head.place(x=0, y=120, width=1530, height=40)
-        back = customtkinter.CTkButton(self.root, text="Back", text_font=("Tahoma", 10, "bold"), bg_color="black",
-                                       fg_color="#64b5f6", command=root.destroy)
+        head.place(x=-120, y=120, width=1530, height=40)
+        back = customtkinter.CTkButton(self.root, text="Back", text_font=("Tahoma", 10, "bold"), bg_color="black",fg_color="#64b5f6", command=self.back)
         back.place(x=1200, y=126)
 
         frame = Frame(self.root, bd=2)
@@ -56,34 +56,31 @@ class realpredict:
         RFrame1 = LabelFrame(self.root, bd=2, relief=RIDGE, font=("Tahoma", 12, "bold"), bg="#263238")
         RFrame1.place(x=0, y=180, width=1600, height=900)
 
-        # viewtbl = customtkinter.CTkButton(RFrame1, command=self.import_csv, width=30, height=30, text="ATTENDANCE",
-        #                                    text_font=("Tahoma", 10, "bold"), fg_color="#fb341c")
-        # viewtbl.place(x=330, y=260)
+        startcam = customtkinter.CTkButton(RFrame1, command=self.attnsmark, width=300, height=30, text="START CAMARA",text_font=("Tahoma", 15), fg_color="#fb341c")
+        startcam.place(x=730, y=290)
 
-        attnsbutton = customtkinter.CTkButton(RFrame1, command=self.attnsmark, width=625, height=30, text="ATTENDANCE",
-                                              text_font=("Tahoma", 15, "bold"), fg_color="#fb341c")
-        attnsbutton.place(x=730, y=290)
+        stopcam = customtkinter.CTkButton(RFrame1, command=self.stopcamara, width=300, height=30, text="STOP CAMARA",text_font=("Tahoma", 15), fg_color="#fb341c")
+        stopcam.place(x=1050, y=290)
 
-        down_frame = customtkinter.CTkFrame(RFrame1, bd=0, bg="White", relief=SUNKEN)
+        down_frame = customtkinter.CTkFrame(RFrame1)
         down_frame.place(x=730, y=20, width=625, height=235)
 
         leftframe = customtkinter.CTkFrame(RFrame1)
-        leftframe.place(x=10, y=20, width=650, height=450)
+        leftframe.place(x=10,y=20,width=700,height=450)
 
         img1 = Image.open("img\\featured_image-1.jpg")
-        img1 = img1.resize((650, 450), Image.Resampling.LANCZOS)
+        img1 = img1.resize((700,450), Image.Resampling.LANCZOS)
         self.photoimg4 = ImageTk.PhotoImage(img1)
         self.bg_img1 = customtkinter.CTkLabel(leftframe, image=self.photoimg4, fg_color="black", bg_color="black")
         self.bg_img1.place(x=0, y=0)
 
-        topBtmsbar = ttk.Scrollbar(down_frame, orient=HORIZONTAL)
+        #topBtmsbar = ttk.Scrollbar(down_frame, orient=HORIZONTAL)
         sideBar = ttk.Scrollbar(down_frame, orient=VERTICAL)
 
-        self.detailtbl = ttk.Treeview(down_frame, columns=("EMPLOYEE_ID", "NAME", "DATE", "TIME"),
-                                      xscrollcommand=topBtmsbar.set, yscrollcommand=sideBar.set)
-        topBtmsbar.pack(side=BOTTOM, fill=X)
+        self.detailtbl = ttk.Treeview(down_frame, columns=("EMPLOYEE_ID", "NAME", "DATE", "TIME"),yscrollcommand=sideBar.set,height=500)
+        #topBtmsbar.pack(side=BOTTOM, fill=X)
         sideBar.pack(side=RIGHT, fill=Y)
-        topBtmsbar.config(command=self.detailtbl.xview)
+        #topBtmsbar.config(command=self.detailtbl.xview)
         sideBar.config(command=self.detailtbl.yview)
 
         self.detailtbl.heading("EMPLOYEE_ID", text="EMPLOYEE_ID")
@@ -100,6 +97,11 @@ class realpredict:
         self.fetch_data()
         # self.detailtbl.bind("<ButtonRelease>", self.get_cursor)
 
+    def back(self):
+        if(self.cam_start==1):
+            root.destroy()
+        else:
+            messagebox.showinfo("WARNING","STOP THE CAMARA", parent=self.root)
     def fetch_data(self):
         today = datetime.date.today()
         date1 = today.strftime("%Y-%m-%d")
@@ -125,7 +127,10 @@ class realpredict:
         liveness_score = list(onnx_pred[0][0])[1]
         return liveness_score
 
+    def stopcamara(self):
+        self.cam_start=1
     def attnsmark(self):
+        self.cam_start = 0
         face_cascade1 = cv2.CascadeClassifier('data\\haarcascade_frontalface_alt2.xml')
 
         today = datetime.date.today()
@@ -166,6 +171,7 @@ class realpredict:
         cap = cv2.VideoCapture(1)
         while (True):
             flag = 0
+            attendance_marked=0
             ret, frame = cap.read()
             #cv2.imshow("frame", frame)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -201,10 +207,11 @@ class realpredict:
                                 if (mark_attendance[0] == i[0]):
                                     mixer.init()
                                     mixer.music.load("audios\\already_marked.mp3")
-                                    # cv2.putText(check_img,"ATTENDANCE ALREADY MARKED",(10,400),font,1,(255,0,0),2,cv2.LINE_AA)
+                                    cv2.putText(frame,emp_name,(10,400),font,1,(0,0,0),2,cv2.LINE_AA)
                                     # check=cv2.cvtColor(check_img,cv2.COLOR_BGR2RGB)
                                     # cv2.imshow(emp_name,check);
                                     mixer.music.play()
+                                    attendance_marked = 1
                                     break
                             else:
                                 my_cursor.execute(("INSERT INTO attendance VALUES(%s, %s, %s, %s)"), mark_attendance)
@@ -214,11 +221,12 @@ class realpredict:
                                 self.fetch_data()
                                 mixer.init()
                                 mixer.music.load("audios\\marked.mp3")
-                                cv2.putText(frame, emp_name, (10, 400), font, 2, (255, 255, 255), 4, cv2.LINE_AA)
+                                cv2.putText(frame, emp_name, (10, 400), font, 2, (0,0,0), 4, cv2.LINE_AA)
                                 #check = cv2.cvtColor(check_img, cv2.COLOR_BGR2RGB)
                                 #cv2.imshow(emp_name, check);
                                 mixer.music.play()
                                 # time.sleep(10)
+                                attendance_marked=1
 
                                 break
                     if (flag == 0):
@@ -228,10 +236,14 @@ class realpredict:
                         mixer.music.play()
             #cv2.imshow("frame", frame)
             frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            frame2 = ImageTk.PhotoImage(Image.fromarray(frame2))
+            frame2 = ImageTk.PhotoImage(Image.fromarray(frame2).resize((700,500),Image.Resampling.LANCZOS))
             self.bg_img1["image"] = frame2
             root.update()
-            if cv2.waitKey(20) & 0xFF == ord('q'):
+            if(attendance_marked==1):
+                time.sleep(5)
+            if self.cam_start==1:
+                self.bg_img1["image"] = self.photoimg4
+                root.update()
                 break
 
         """print('current',curr_attendance)
@@ -243,15 +255,8 @@ class realpredict:
         cv2.destroyAllWindows()
 
 
+
 if __name__ == '__main__':
     root = Tk()
     obj = realpredict(root)
     root.mainloop()
-
-    """Warning (from warnings module):
-      File "F:/2 SEM MCA/mini_project/project_face/face_recog1.py", line 46
-        if face1 != ():
-    DeprecationWarning: elementwise comparison failed; this will raise an error in the future.
-
-    https://www.tutorialspoint.com/python-tkinter-how-to-export-data-from-entry-fields-to-a-csv-file
-    """
