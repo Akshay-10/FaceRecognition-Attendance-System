@@ -32,22 +32,18 @@ class realpredict:
         # OOOOOOOOO
 
         img1 = Image.open("img\\6b77beffb8d54b09b7414bd72c07342e.png")
-        img1 = img1.resize((100, 100), Image.Resampling.LANCZOS)
+        img1 = img1.resize((105, 105), Image.Resampling.LANCZOS)
         self.photoimg1 = ImageTk.PhotoImage(img1)
 
         sndlbl = Label(self.root, image=self.photoimg1)
-        sndlbl.place(x=0, y=0, width=100, height=100)
+        sndlbl.place(x=0, y=0, width=105, height=105)
 
-        img2 = Image.open("img\\flc_design2022053147056.png")
-        img2 = img2.resize((300, 100), Image.Resampling.LANCZOS)
-        self.photoimg3 = ImageTk.PhotoImage(img2)
-
-        trdlbl = Label(self.root, image=self.photoimg3)
-        trdlbl.place(x=640, y=0, width=300, height=100)
+        logi_in = Label(self.root, text="SMART AUTHORIZING SYSTEM", font=("Tahoma", 20, "bold"), fg="#f5f5f5",bg="#263238", width=80, height=3, bd=2)
+        logi_in.place(x=100, y=0)
 
         head = Label(self.root, text="ATTENDANCE REPORT", font=("Tahoma", 25, "bold"), bg="black", fg="white")
         head.place(x=-120, y=120, width=1530, height=40)
-        back = customtkinter.CTkButton(self.root, text="Back", text_font=("Tahoma", 10, "bold"), bg_color="black",fg_color="#64b5f6", command=self.back)
+        back = customtkinter.CTkButton(self.root, text="Back", text_font=("Tahoma", 10, "bold"), bg_color="black",fg_color="#64b5f6", command=self.back,cursor="hand2")
         back.place(x=1200, y=126)
 
         frame = Frame(self.root, bd=2)
@@ -56,10 +52,10 @@ class realpredict:
         RFrame1 = LabelFrame(self.root, bd=2, relief=RIDGE, font=("Tahoma", 12, "bold"), bg="#263238")
         RFrame1.place(x=0, y=180, width=1600, height=900)
 
-        startcam = customtkinter.CTkButton(RFrame1, command=self.attnsmark, width=300, height=30, text="START CAMARA",text_font=("Tahoma", 15), fg_color="#fb341c")
+        startcam = customtkinter.CTkButton(RFrame1, command=self.attnsmark, width=300, height=30, text="START CAMARA",text_font=("Tahoma", 15), fg_color="#fb341c",cursor="hand2")
         startcam.place(x=730, y=290)
 
-        stopcam = customtkinter.CTkButton(RFrame1, command=self.stopcamara, width=300, height=30, text="STOP CAMARA",text_font=("Tahoma", 15), fg_color="#fb341c")
+        stopcam = customtkinter.CTkButton(RFrame1, command=self.stopcamara, width=300, height=30, text="STOP CAMARA",text_font=("Tahoma", 15), fg_color="#fb341c",cursor="hand2")
         stopcam.place(x=1050, y=290)
 
         down_frame = customtkinter.CTkFrame(RFrame1)
@@ -101,7 +97,7 @@ class realpredict:
         if(self.cam_start==1):
             root.destroy()
         else:
-            messagebox.showinfo("WARNING","STOP THE CAMARA", parent=self.root)
+            messagebox.showwarning("WARNING","STOP THE CAMARA BEFORE GOING BACK", parent=self.root)
     def fetch_data(self):
         today = datetime.date.today()
         date1 = today.strftime("%Y-%m-%d")

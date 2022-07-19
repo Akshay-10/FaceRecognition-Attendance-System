@@ -51,63 +51,57 @@ class login_design():
 
         username_lbl = customtkinter.CTkLabel(frame1, text="Username", text_font=("Tahoma", 10,"bold"),text_color="white", bg_color="#263238")
         username_lbl.place(x=485, y=180)
-        self.user_entry = customtkinter.CTkEntry(frame1, width=300,height=20,text_font=("Tahoma", 10),fg_color="black",text_color="white",cursor="hand2")
+        self.user_entry = customtkinter.CTkEntry(frame1, width=300,height=20,text_font=("Tahoma", 10),fg_color="black",text_color="white",cursor="hand2",border_width=0)
         self.user_entry.place(x=520, y=210)
 ########################
         pswd_lbl = customtkinter.CTkLabel(frame1, text="Password",text_font=("Tahoma", 10,"bold"), text_color="white",bg_color="#263238")
         pswd_lbl.place(x=485, y=260)
-        self.pswd_entry = customtkinter.CTkEntry(frame1, width=300,height=20,text_font=("Tahoma", 10),fg_color="black", text_color="white",cursor="hand2",show="*")
+        self.pswd_entry = customtkinter.CTkEntry(frame1, width=300,height=20,text_font=("Tahoma", 10),fg_color="black", text_color="white",cursor="hand2",show="*",border_width=0)
         self.pswd_entry.place(x=520, y=290)
         ###########
         logbutton=customtkinter.CTkButton(frame1,text="Login",command=self.login,width=300,height=30,relief=RIDGE,text_font=("Tahoma", 10,"bold"), text_color="black",fg_color="#fb341c",cursor="hand2")
         logbutton.place(x=520,y=340)
 ##################
-        #fgtpass=customtkinter.CTkButton(frame1,text="forgot password ?",command=self.fgt_pass,height=0,width=0,bd=0,text_font=("Tahoma", 10,"bold"),fg_color="#263238",text_color="#fa333e",cursor="hand2")
-        #fgtpass.place(x=690,y=375)
+        fgtpass=customtkinter.CTkButton(frame1,text="forgot password ?",command=self.fgt_pass,height=0,width=0,bd=0,text_font=("Tahoma", 10,"bold"),fg_color="#263238",text_color="#fa333e",cursor="hand2")
+        fgtpass.place(x=690,y=375)
 ########################
 
     def fgt_pass(self):
-        if self.user_entry.get()=="":
-            messagebox.showerror("Error","Please enter the email id")
+        self.root1 = Toplevel()
+        self.root1.title("Forgot Password")
+        self.root1.geometry('450x477+150+175')
+        self.root1.config(bg="#263238")
+
+        flbl = customtkinter.CTkLabel(self.root1, text="Forgot Password", text_font=("Tahoma", 10, "bold"),bg_color="#263238", fg_color="orange",width=450)
+        flbl.place(x=0, y=10)
+
+        schlbl = customtkinter.CTkLabel(self.root1, text="Email Id",text_font=("Tahoma", 10, "bold"),text_color='white',bg_color="#263238",fg_color="#263238",width=90)
+        schlbl.place(x=40, y=70)
+        schcomb =customtkinter.CTkEntry(self.root1, width=300,height=20,text_font=("times new roman", 10),text_color='white',border_width=0,fg_color='black',cursor="hand2")
+        schcomb.place(x=55, y=100)
+
+        anwlbl = customtkinter.CTkLabel(self.root1, text="New Password", text_font=("Tahoma", 10, "bold"),text_color='white',bg_color="#263238",fg_color="#263238",width=90)
+        anwlbl.place(x=50, y=130)
+        self.ans_entry = customtkinter.CTkEntry(self.root1, width=300,height=20,text_font=("times new roman", 10),text_color='white',border_width=0,fg_color='black',show='*',cursor="hand2")
+        self.ans_entry.place(x=55, y=160)
+
+        pass_lbl = customtkinter.CTkLabel(self.root1, text="Confirm Password", text_font=("Tahoma", 10, "bold"),text_color='white',bg_color="#263238",fg_color="#263238",width=90)
+        pass_lbl.place(x=50, y=190)
+        self.pass_entry = customtkinter.CTkEntry(self.root1, width=300,height=20,text_font=("times new roman", 10),text_color='white',border_width=0,fg_color='black',show='*',cursor="hand2")
+        self.pass_entry.place(x=55, y=220)
+
+        restbut=customtkinter.CTkButton(self.root1,text='Reset',text_font=("Tahoma", 15, "bold"),text_color='orange',bg_color="#263238",fg_color="#263238",width=1,cursor="hand2")
+        restbut.place(x=280, y=250)
+
+        connection = mysql.connector.connect(user='adminuser', password='Akshay10', host='35.90.7.49', database='sas',port='3306')
+        my_cursor=connection.cursor()
+        my_cursor.execute("select * from regsaved where email=%s",(self.user.get()))
+        row=my_cursor.fetchone()
+
+        if row==None:
+            messagebox.showerror("Error","Please enter the valid email id")
         else:
-            connection = mysql.connector.connect(user='adminuser', password='Akshay10', host='35.90.7.49', database='sas',port='3306')
-            '''connection=mysql.connector.connect(user='adminuser', password='Akshay10', host='35.90.7.49',
-                                               database='sas', auth_plugin= 'caching_sha2_password')'''
-            my_cursor=connection.cursor()
-            my_cursor.execute("select * from regsaved where email=%s",(self.user.get()))
-            row=my_cursor.fetchone()
-
-            if row==None:
-                messagebox.showerror("Error","Please enter the valid email id")
-            else:
-                connection.close()
-                self.root1=Toplevel()
-                self.root1.title("Forgot Password")
-                self.root1.geometry('zoomed')
-                self.root1.config(bg="black")
-
-                flbl=customtkinter.CTkLabel(self.root1,text="Forgot Password",text_font=("Tahoma", 10,"bold"),bg_color="black",fg_color="orange")
-                flbl.place(x=0,y=10)
-
-                schlbl=customtkinter.CTkLabel(self.root1,text="Select the Security question",text_font=("Tahoma", 10,"bold"),bg_color="black",fg_color="white")
-                schlbl.place(x=50,y=70)
-                schcomb=ttk.Combobox(self.root1,textvariable=self.comb_security,font=("Tahoma", 10,"bold"),width=35,state="readonly")
-                schcomb["values"]=("Select","Your DOB","Your friend name")
-                schcomb.current(0)
-                schcomb.place(x=50,y=100)
-
-                anwlbl=customtkinter.CTkLabel(self.root1,text="Your Answer",text_font=("Tahoma", 10,"bold"),bg_color="black",fg_color="white")
-                anwlbl.place(x=50,y=130)
-                self.ans_entry = customtkinter.CTkEntry(self.root1, textvariable=self.combo_securityA, width=37,
-                                           text_font=("times new roman", 10))
-                self.ans_entry.place(x=50, y=160)
-
-                pass_lbl = customtkinter.CTkLabel(self.root1, text="New Password", text_font=("lucida handwriting", 10), bg_color='black',
-                                 fg_color='white')
-                pass_lbl.place(x=50, y=190)
-                self.pass_entry = customtkinter.CTkEntry(self.root1, textvariable=self.new_pass, width=37,
-                                            text_font=("times new roman", 10))
-                self.pass_entry.place(x=50, y=220)
+            connection.close()
 
     def login(self):
         if self.user_entry.get=="" or self.pswd_entry.get()=="":

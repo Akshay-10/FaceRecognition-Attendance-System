@@ -7,44 +7,41 @@ import datetime
 import csv
 import pandas as pd
 from tkinter import ttk
-from PIL import Image,ImageTk
+from PIL import ImageTk
+import PIL.Image
 import customtkinter
 import Image, ImageTk
 from tkinter import *
+from tkinter import ttk, messagebox
 
 class carpredict:
-    '''def __init__(self, root):
-        self.root = root
-        root.state('zoomed')
-        self.root.title("VEHICLE ENTRY SYSTEM")
+    def __init__(self,root):
+        self.root=root
+        self.root.state('zoomed')
+        self.root.title('Number Plate Recognition')
+        self.cam_start = 1
         self.root.iconbitmap("img\\saslog.ico")
-        img = Image.open("img\\pexels-ben-mack-6775241.jpg")
-        img = img.resize((1530, 990), Image.ANTIALIAS)
-        self.photoimg = ImageTk.PhotoImage(img)
 
-        fstlbl = Label(self.root, image=self.photoimg)
+        image = PIL.Image.open("img\\pexels-ben-mack-6775241.jpg")  # use this
+        image.resize((1530,990),PIL.Image.Resampling.LANCZOS)
+        self.photo = ImageTk.PhotoImage(image)
+        fstlbl = Label(self.root, image=self.photo)
         fstlbl.place(x=0, y=100, width=1530, height=990)
 
-        # OOOOOOOOO
-
-        img1 = Image.open("img\\6b77beffb8d54b09b7414bd72c07342e.png")
-        img1 = img1.resize((100, 100), Image.Resampling.LANCZOS)
+        img1 = PIL.Image.open("img\\6b77beffb8d54b09b7414bd72c07342e.png")
+        img1 = img1.resize((105, 105), PIL.Image.Resampling.LANCZOS)
         self.photoimg1 = ImageTk.PhotoImage(img1)
 
         sndlbl = Label(self.root, image=self.photoimg1)
-        sndlbl.place(x=0, y=0, width=100, height=100)
+        sndlbl.place(x=0, y=0, width=105, height=105)
 
-        img2 = Image.open("img\\flc_design2022053147056.png")
-        img2 = img2.resize((300, 100), Image.Resampling.LANCZOS)
-        self.photoimg3 = ImageTk.PhotoImage(img2)
+        logi_in = Label(self.root, text="SMART AUTHORIZING SYSTEM", font=("Tahoma", 20, "bold"), fg="#f5f5f5",bg="#263238", width=80, height=3, bd=2)
+        logi_in.place(x=100, y=0)
 
-        trdlbl = Label(self.root, image=self.photoimg3)
-        trdlbl.place(x=620, y=0, width=300, height=100)
-
-        head = Label(self.root, text="ATTENDANCE REPORT", font=("Tahoma", 25, "bold"), bg="black", fg="white")
-        head.place(x=0, y=120, width=1530, height=40)
+        head = Label(self.root, text="VEHICLE NUMBER ENTRY RECORD", font=("Tahoma", 25, "bold"), bg="black", fg="white")
+        head.place(x=-120, y=120, width=1530, height=40)
         back = customtkinter.CTkButton(self.root, text="Back", text_font=("Tahoma", 10, "bold"), bg_color="black",
-                                       fg_color="#64b5f6", command=root.destroy)
+                                       fg_color="#64b5f6",command=self.back,cursor="hand2")
         back.place(x=1200, y=126)
 
         frame = Frame(self.root, bd=2)
@@ -53,47 +50,54 @@ class carpredict:
         RFrame1 = LabelFrame(self.root, bd=2, relief=RIDGE, font=("Tahoma", 12, "bold"), bg="#263238")
         RFrame1.place(x=0, y=180, width=1600, height=900)
 
-        # viewtbl = customtkinter.CTkButton(RFrame1, command=self.import_csv, width=30, height=30, text="ATTENDANCE",
-        #                                    text_font=("Tahoma", 10, "bold"), fg_color="#fb341c")
-        # viewtbl.place(x=330, y=260)
+        startcam = customtkinter.CTkButton(RFrame1, command=self.cplt, width=300, height=30, text="START CAMARA",
+                                           text_font=("Tahoma", 15), fg_color="#fb341c",cursor="hand2")
+        startcam.place(x=730, y=290)
 
-        attnsbutton = customtkinter.CTkButton(RFrame1, command=self.cplt, width=625, height=30, text="START",
-                                              text_font=("Tahoma", 15, "bold"), fg_color="#fb341c")
-        attnsbutton.place(x=730, y=290)
+        stopcam = customtkinter.CTkButton(RFrame1, command=self.stopcamara, width=300, height=30, text="STOP CAMARA",
+                                          text_font=("Tahoma", 15), fg_color="#fb341c",cursor="hand2")
+        stopcam.place(x=1050, y=290)
 
-        down_frame = customtkinter.CTkFrame(RFrame1, bd=0, bg="White", relief=SUNKEN)
+        down_frame = customtkinter.CTkFrame(RFrame1)
         down_frame.place(x=730, y=20, width=625, height=235)
 
         leftframe = customtkinter.CTkFrame(RFrame1)
-        leftframe.place(x=10, y=20, width=650, height=450)
+        leftframe.place(x=10, y=20, width=700, height=450)
 
-        img1 = Image.open("img\\featured_image-1.jpg")
-        img1 = img1.resize((650, 450), Image.Resampling.LANCZOS)
-        self.photoimg4 = ImageTk.PhotoImage(img1)
+        img10 = PIL.Image.open("img\\featured_image-1.jpg")
+        img10= img10.resize((700, 450), PIL.Image.Resampling.LANCZOS)
+        self.photoimg4 = ImageTk.PhotoImage(img10)
         self.bg_img1 = customtkinter.CTkLabel(leftframe, image=self.photoimg4, fg_color="black", bg_color="black")
         self.bg_img1.place(x=0, y=0)
 
-        topBtmsbar = ttk.Scrollbar(down_frame, orient=HORIZONTAL)
         sideBar = ttk.Scrollbar(down_frame, orient=VERTICAL)
 
-        self.detailtbl = ttk.Treeview(down_frame, columns=("VEHICLE NUMBER", "ENTRY TIME"),
-                                      xscrollcommand=topBtmsbar.set, yscrollcommand=sideBar.set)
-        topBtmsbar.pack(side=BOTTOM, fill=X)
+        self.detailtbl = ttk.Treeview(down_frame, columns=("VEHICLE_NUMBER","TIME"),
+                                      yscrollcommand=sideBar.set, height=500)
+        # topBtmsbar.pack(side=BOTTOM, fill=X)
         sideBar.pack(side=RIGHT, fill=Y)
-        topBtmsbar.config(command=self.detailtbl.xview)
+        # topBtmsbar.config(command=self.detailtbl.xview)
         sideBar.config(command=self.detailtbl.yview)
 
-        self.detailtbl.heading("VEHICLE NUMBER", text="VEHICLE NUMBER")
-        self.detailtbl.heading("ENTRY TIME", text="ENTRY TIME")
+        self.detailtbl.heading("VEHICLE_NUMBER", text="VEHICLE_NUMBER")
+        self.detailtbl.heading("TIME", text="TIME")
         self.detailtbl["show"] = "headings"
-        self.detailtbl.column("VEHICLE NUMBER", width=150)
-        self.detailtbl.column("ENTRY TIME", width=100)
+        self.detailtbl.column("VEHICLE_NUMBER", width=100)
+        self.detailtbl.column("TIME", width=100)
 
         self.detailtbl.pack(fill=BOTH, expand=0)
-        #self.fetch_data()
-        # self.detailtbl.bind("<ButtonRelease>", self.get_cursor)'''
+
+    def back(self):
+        if(self.cam_start==1):
+            root.destroy()
+        else:
+            messagebox.showwarning("WARNING","STOP THE CAMARA BEFORE GOING BACK", parent=self.root)
+
+    def stopcamara(self):
+        self.cam_start = 1
 
     def cplt(self):
+        self.cam_start = 0
         today = datetime.date.today()
         today = "entry/" + today.strftime("%d_%m_%Y") + ".csv"
         print(today)
@@ -252,13 +256,21 @@ class carpredict:
                 cv2.namedWindow('YOLO', cv2.WINDOW_KEEPRATIO)
                 cv2.imshow('YOLO', results)
             cv2.imshow("frame", frame)
-            if cv2.waitKey(20) & 0xFF == ord('q'):
+
+                # cv2.imshow("frame", frame)
+            frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame2 = ImageTk.PhotoImage(Image.fromarray(frame2).resize((700, 500), Image.Resampling.LANCZOS))
+            self.bg_img1["image"] = frame2
+            root.update()
+            if self.cam_start == 1:
+                self.bg_img1["image"] = self.photoimg4
+                root.update()
                 break
 
-        with open(today, 'a+', encoding='UTF8', newline='') as file:
-            writer = csv.writer(file)
-            for i in entry_list:
-                writer.writerow(i)
+        #with open(today, 'a+', encoding='UTF8', newline='') as file:
+         #   writer = csv.writer(file)
+          #  for i in entry_list:
+           #     writer.writerow(i)
 
         cv2.destroyAllWindows()
         cap.release()

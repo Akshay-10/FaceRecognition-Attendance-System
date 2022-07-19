@@ -39,18 +39,14 @@ class attendance:
         fstlbl.place(x=0, y=0, width=1530, height=990)
 
         img1 = Image.open("img\\6b77beffb8d54b09b7414bd72c07342e.png")
-        img1 = img1.resize((100, 100), Image.Resampling.LANCZOS)
+        img1 = img1.resize((105, 105), Image.Resampling.LANCZOS)
         self.photoimg1 = ImageTk.PhotoImage(img1)
-
         sndlbl = Label(self.root, image=self.photoimg1)
-        sndlbl.place(x=0, y=0, width=100, height=100)
+        sndlbl.place(x=0, y=0, width=105, height=105)
 
-        img2 = Image.open("img\\flc_design2022053147056.png")
-        img2 = img2.resize((300, 100), Image.Resampling.LANCZOS)
-        self.photoimg2 = ImageTk.PhotoImage(img2)
+        logi_in = Label(self.root, text="SMART AUTHORIZING SYSTEM", font=("Tahoma", 20, "bold"), fg="#f5f5f5",bg="#263238", width=80, height=3, bd=2)
+        logi_in.place(x=100, y=0)
 
-        trdlbl = Label(self.root, image=self.photoimg2)
-        trdlbl.place(x=620, y=0, width=300, height=100)
 
         head = Label(self.root, text="EMPLOYEE DETAILS", font=("Tahoma", 25, "bold"), bg="black", fg="white")
         head.place(x=0, y=120, width=1530, height=40)
@@ -114,7 +110,7 @@ class attendance:
         Dptlbl = Label(RFrame1, text="Department :",font=("tahoma", 10, "bold"),background="white")
         Dptlbl.grid(row=0, column=0, padx=5, sticky=W)
 
-        Dptcom = ttk.Combobox(RFrame1, textvariable=self.DEPARTMENT, font=("Tahoma", 10), state="readonly", width=18)
+        Dptcom = ttk.Combobox(RFrame1, textvariable=self.DEPARTMENT, font=("Tahoma", 10), state="readonly", width=18,cursor="hand2")
         Dptcom["values"] = ("Choose Department", "IT", "Management", "Service")
         Dptcom.current(0)
         Dptcom.grid(row=0, column=1, padx=5, pady=10, sticky=W)
@@ -122,7 +118,7 @@ class attendance:
         Dptlbl1 =Label(RFrame1, text="Designation :",font=("tahoma", 10, "bold"),background="white")
         Dptlbl1.grid(row=0, column=2, padx=5, sticky=W)
 
-        Dptcom1 = ttk.Combobox(RFrame1, textvariable=self.DESIGNATION, font=("Tahoma", 10), state="readonly", width=18)
+        Dptcom1 = ttk.Combobox(RFrame1, textvariable=self.DESIGNATION, font=("Tahoma", 10), state="readonly", width=18,cursor="hand2")
         Dptcom1["values"] = (
             "Choose Designation", "Senior Manager", "Asst Manager", "HR", "TL", "Project Manager", "Developer",
             "Tester", "Trainee")
@@ -132,7 +128,7 @@ class attendance:
         Dptlbl2 = Label(RFrame1, text="Joining Month :",font=("tahoma", 10, "bold"),background="white")
         Dptlbl2.grid(row=0, column=4, padx=5, sticky=W)
 
-        Dptcom2 = ttk.Combobox(RFrame1,textvariable=self.JOINING_MONTH, font=("Tahoma", 10), state="readonly", width=18)
+        Dptcom2 = ttk.Combobox(RFrame1,textvariable=self.JOINING_MONTH, font=("Tahoma", 10), state="readonly", width=18,cursor="hand2")
         Dptcom2["values"] = (
             "Choose Month", "January", "February", "March", "April", "May", "June", "July", "August", "September",
             "October", "November", "December")
@@ -141,57 +137,57 @@ class attendance:
 
         empid = Label(RFrame1, text="EmployeeID :", font=("tahoma", 10, "bold"), background="white")
         empid.grid(row=0, column=6, padx=5, pady=10, sticky=W)
-        empbox = ttk.Entry(RFrame1, textvariable=self.EMPLOYEE_ID, width=20, font=("tahoma", 10))
+        empbox = ttk.Entry(RFrame1, textvariable=self.EMPLOYEE_ID, width=20, font=("tahoma", 10),cursor="hand2")
         empbox.grid(row=0, column=7, padx=5, sticky=W)
 
 
         empname = Label(RFrame1, text="Name :", font=("tahoma", 10, "bold"), background="white")
         empname.grid(row=1, column=0, padx=5, pady=10, sticky=W)
-        empnmbox = ttk.Entry(RFrame1, textvariable=self.NAME, width=20, font=("tahoma", 10))
+        empnmbox = ttk.Entry(RFrame1, textvariable=self.NAME, width=20, font=("tahoma", 10),cursor="hand2")
         empnmbox.grid(row=1, column=1, padx=5, sticky=W)
 
         empdob = Label(RFrame1, text="D O B :", font=("tahoma", 10, "bold"), background="white")
         empdob.grid(row=1, column=2, padx=5, pady=10, sticky=W)
-        empdbbox = ttk.Entry(RFrame1, textvariable=self.DOB, width=20, font=("tahoma", 10))
+        empdbbox = ttk.Entry(RFrame1, textvariable=self.DOB, width=20, font=("tahoma", 10),cursor="hand2")
         empdbbox.grid(row=1, column=3, padx=5, sticky=W)
 
         empmail = Label(RFrame1, text="Email :", font=("tahoma", 10, "bold"), background="white")
         empmail.grid(row=1, column=4, padx=5, pady=10, sticky=W)
-        empmlbox = ttk.Entry(RFrame1, textvariable=self.EMAIL, width=20, font=("tahoma", 10))
+        empmlbox = ttk.Entry(RFrame1, textvariable=self.EMAIL, width=20, font=("tahoma", 10),cursor="hand2")
         empmlbox.grid(row=1, column=5, padx=5, sticky=W)
 
         empgndr = Label(RFrame1, text="Gender :", font=("tahoma", 10, "bold"), background="white")
         empgndr.grid(row=1, column=6, padx=5, pady=10, sticky=W)
-        empgdbox = ttk.Combobox(RFrame1, textvariable=self.GENDER, width=18, font=("tahoma", 10), state="readonly")
+        empgdbox = ttk.Combobox(RFrame1, textvariable=self.GENDER, width=18, font=("tahoma", 10), state="readonly",cursor="hand2")
         empgdbox["values"] = ("Choose Gender", "Male", "Female")
         empgdbox.current(0)
         empgdbox.grid(row=1, column=7, padx=5, sticky=W)
 
         empmsts = Label(RFrame1, text="Martial Status :", font=("tahoma", 10, "bold"), background="white")
         empmsts.grid(row=2, column=0, padx=5, pady=10, sticky=W)
-        empmstbox = ttk.Combobox(RFrame1, textvariable=self.MARTIAL_STATUS, width=18, font=("tahoma", 10),state="readonly")
+        empmstbox = ttk.Combobox(RFrame1, textvariable=self.MARTIAL_STATUS, width=18, font=("tahoma", 10),state="readonly",cursor="hand2")
         empmstbox["values"] = ("Choose Marital status", "Married", "Unmarried")
         empmstbox.current(0)
         empmstbox.grid(row=2, column=1, padx=5, sticky=W)
 
         empnal = Label(RFrame1, text="Nationality :", font=("tahoma", 10, "bold"), background="white")
         empnal.grid(row=2, column=2, padx=5, pady=10, sticky=W)
-        empnlbox = ttk.Entry(RFrame1, textvariable=self.NATIONALITY, width=20, font=("tahoma", 10))
+        empnlbox = ttk.Entry(RFrame1, textvariable=self.NATIONALITY, width=20, font=("tahoma", 10),cursor="hand2")
         empnlbox.grid(row=2, column=3, padx=5, sticky=W)
 
         empbld = Label(RFrame1, text="Blood Group :", font=("tahoma", 10, "bold"), background="white")
         empbld.grid(row=2, column=4, padx=5, pady=10, sticky=W)
-        empbldbox = ttk.Entry(RFrame1, textvariable=self.BLOOD_GROUP, width=20, font=("tahoma", 10))
+        empbldbox = ttk.Entry(RFrame1, textvariable=self.BLOOD_GROUP, width=20, font=("tahoma", 10),cursor="hand2")
         empbldbox.grid(row=2, column=5, padx=5, sticky=W)
 
         empphn = Label(RFrame1, text="Phone No. :", font=("tahoma", 10, "bold"), background="white")
         empphn.grid(row=2, column=6, padx=5, pady=10, sticky=W)
-        emppnbox = ttk.Entry(RFrame1, textvariable=self.PHONE_NUMBER, width=20, font=("tahoma", 10))
+        emppnbox = ttk.Entry(RFrame1, textvariable=self.PHONE_NUMBER, width=20, font=("tahoma", 10),cursor="hand2")
         emppnbox.grid(row=2, column=7, padx=5, sticky=W)
 
         empadds = Label(RFrame1, text="Address :", font=("tahoma", 10, "bold"), background="white")
         empadds.grid(row=3, column=0, padx=5, pady=10, sticky=W)
-        empadsbox = ttk.Entry(RFrame1, textvariable=self.ADDRESS, width=20, font=("tahoma", 10))
+        empadsbox = ttk.Entry(RFrame1, textvariable=self.ADDRESS, width=20, font=("tahoma", 10),cursor="hand2")
         empadsbox.grid(row=3, column=1, padx=5, sticky=W)
 
 
@@ -203,22 +199,22 @@ class attendance:
         self.photo=Label(RFrame2,image=self.photoimg3,background="white",width=140,height=160)
         self.photo.grid(row=0,column=0)
 
-        btnphto = customtkinter.CTkButton(RFrame1, text="Take Photo",command=lambda :self.facecaps(empbox.get(),0),fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=15)
+        btnphto = customtkinter.CTkButton(RFrame1, text="Take Photo",command=lambda :self.facecaps(empbox.get(),0),fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=15,cursor="hand2")
         btnphto.grid(row=6, column=0)
 
-        btnphto =customtkinter.CTkButton(RFrame1, text="Update Photo",command=lambda :self.facecaps(empbox.get(),1),fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=15)
+        btnphto =customtkinter.CTkButton(RFrame1, text="Update Photo",command=lambda :self.facecaps(empbox.get(),1),fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=15,cursor="hand2")
         btnphto.grid(row=6, column=1)
 
-        btnsave = customtkinter.CTkButton(RFrame1, text="Save", command=self.add_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=13)
+        btnsave = customtkinter.CTkButton(RFrame1, text="Save", command=self.add_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=13,cursor="hand2")
         btnsave.grid(row=6, column=2)
 
-        btnupdt = customtkinter.CTkButton(RFrame1, text="Update", command=self.update_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=13)
+        btnupdt = customtkinter.CTkButton(RFrame1, text="Update", command=self.update_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=13,cursor="hand2")
         btnupdt.grid(row=6, column=3)
 
-        btndel = customtkinter.CTkButton(RFrame1, text="Delete", command=self.delete_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=13)
+        btndel = customtkinter.CTkButton(RFrame1, text="Delete", command=self.delete_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=13,cursor="hand2")
         btndel.grid(row=6, column=4)
 
-        btnres = customtkinter.CTkButton(RFrame1, text="Reset", command=self.reset_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=13)
+        btnres = customtkinter.CTkButton(RFrame1, text="Reset", command=self.reset_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=13,cursor="hand2")
         btnres.grid(row=6, column=5)
 
         #btnvwe = customtkinter.CTkButton(RFrame1, text="VIEW IMAGE", command=lambda :self.choose(empbox.get()), fg_color="#fb341c",text_font=("Tahoma", 10, "bold"), width=13)

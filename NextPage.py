@@ -96,7 +96,7 @@ class face_Recog:
 
     def carplt(self):
         self.new_window2=Toplevel(self.root)
-        self.atn=carpredict.cplt(self.new_window2)
+        self.atn=carpredict(self.new_window2)
 
 if __name__ == '__main__':
     root=Tk()
