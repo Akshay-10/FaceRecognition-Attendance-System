@@ -13,7 +13,7 @@ class face_Recog:
         self.root.title("Smart Authorizing System")
         self.root.iconbitmap("img\\saslog.ico")
 
-        img = Image.open(r"img\\log bg.jpg")
+        img = Image.open(r"img\\pexels-ben-mack-6775241.jpg")
         img.resize((500,500),Image.Resampling.LANCZOS)
         self.photoimg00 = ImageTk.PhotoImage(img)
         fstlbl = Label(self.root, image=self.photoimg00)
@@ -87,7 +87,7 @@ class face_Recog:
         lbltxt.place(x=900, y=495, width=101, height=30)
 
     def emp_details(self):
-        self.new_window=Toplevel(self.root)
+        self.new_window=customtkinter.CTkToplevel(self.root)
         self.app=attendance(self.new_window)
 
     def attns(self):

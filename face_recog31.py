@@ -20,6 +20,7 @@ class realpredict:
         self.root = root
         root.state('zoomed')
         self.root.title("Attendance System")
+        self.root.overrideredirect(True)
         self.root.iconbitmap("img\\saslog.ico")
         self.cam_start=1
         img = Image.open("img\\pexels-ben-mack-6775241.jpg")
@@ -41,7 +42,7 @@ class realpredict:
         logi_in = Label(self.root, text="SMART AUTHORIZING SYSTEM", font=("Tahoma", 20, "bold"), fg="#f5f5f5",bg="#263238", width=80, height=3, bd=2)
         logi_in.place(x=100, y=0)
 
-        head = Label(self.root, text="ATTENDANCE REPORT", font=("Tahoma", 25, "bold"), bg="black", fg="white")
+        head = Label(self.root, text="ATTENDANCE REPORT", font=("Tahoma", 25, "bold"), bg="#263238", fg="white")
         head.place(x=-120, y=120, width=1530, height=40)
         back = customtkinter.CTkButton(self.root, text="Back", text_font=("Tahoma", 10, "bold"), bg_color="black",fg_color="#64b5f6", command=self.back,cursor="hand2")
         back.place(x=1200, y=126)

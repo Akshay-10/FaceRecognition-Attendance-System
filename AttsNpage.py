@@ -13,9 +13,8 @@ class attendance:
         self.root=root
         self.root.state('zoomed')
         self.root.title("Attendance System")
+        self.root.overrideredirect(True)
         self.root.iconbitmap("img\\saslog.ico")
-
-
 
         self.EMPLOYEE_ID = StringVar()
         self.NAME = StringVar()
@@ -48,59 +47,20 @@ class attendance:
         logi_in.place(x=100, y=0)
 
 
-        head = Label(self.root, text="EMPLOYEE DETAILS", font=("Tahoma", 25, "bold"), bg="black", fg="white")
+        head = Label(self.root, text="EMPLOYEE DETAILS", font=("Tahoma", 25, "bold"), bg="#263238", fg="white")
         head.place(x=0, y=120, width=1530, height=40)
-        back=customtkinter.CTkButton(self.root, text="Back", text_font=("Tahoma", 10, "bold"),bg_color="black",fg_color="#64b5f6",command=root.destroy)
+        back=customtkinter.CTkButton(self.root, text="Back", text_font=("Tahoma", 10, "bold"),bg_color="#263238",fg_color="#64b5f6",command=root.destroy)
         back.place(x=1200,y=126)
 
         frame = Frame(self.root, bd=2)
         frame.place(x=0, y=175, width=1530, height=650)
 
-        # lframe
-        '''LFrame = LabelFrame(self.root, bd=2, relief=RIDGE, text="Employee Details :", font=("Tahoma", 10, "bold"),
-                            bg="#4AA176")
-        LFrame.place(x=10, y=180, width=600, height=355)
-
-        LFrame = LabelFrame(LFrame, bd=2, relief=RIDGE, text="Information", font=("tahoma", 12, "bold"), bg="#65CC81")
-        LFrame.place(x=0, y=10, width=600, height=292)
-
-        ##
-        Dptlbl = customtkinter.CTkLabel(LFrame, text="Department :", text_font=("tahoma", 10, "bold"))
-        Dptlbl.grid(row=0, column=0, padx=0, sticky=W)
-
-        Dptcom = ttk.Combobox(LFrame, textvariable=self.DEPARTMENT, font=("Tahoma", 10), state="readonly",width=18)
-        Dptcom["values"] = ("Choose Department", "IT", "Management", "Service")
-        Dptcom.current(0)
-        Dptcom.grid(row=0, column=1, padx=0, pady=10, sticky=W)
-        ##
-        Dptlbl1 = customtkinter.CTkLabel(LFrame, text="Designation :", text_font=("tahoma", 10, "bold"))
-        Dptlbl1.grid(row=3, column=0, padx=0, sticky=W)
-
-        Dptcom1 = ttk.Combobox(LFrame, textvariable=self.DESIGNATION, font=("Tahoma", 10), state="readonly",width=18)
-        Dptcom1["values"] = (
-        "Choose Designation", "Senior Manager", "Asst Manager", "HR", "TL", "Project Manager", "Developer",
-        "Tester", "Trainee")
-        Dptcom1.current(0)
-        Dptcom1.grid(row=3, column=1, padx=0, pady=10, sticky=W)
-        ##
-        Dptlbl2 = customtkinter.CTkLabel(LFrame, text="Joining Month", text_font=("tahoma", 10, "bold"))
-        Dptlbl2.grid(row=0, column=3, padx=0, sticky=W)
-
-        Dptcom2 = ttk.Combobox(LFrame, font=("Tahoma", 10), state="readonly",width=18)
-        Dptcom2["values"] = (
-        "Choose Month", "January", "February", "March", "April", "May", "June", "July", "August", "September",
-        "Ocotber", "November", "December")
-        Dptcom2.current(0)
-        Dptcom2.grid(row=0, column=4, padx=0, pady=10, sticky=W)'''
-
-        ########################
-
-        RFrame1 = LabelFrame(self.root, bd=2, relief=RIDGE, text="Employee Details", font=("Tahoma", 10, "bold"),
-                             bg="#4AA176")
+        RFrame1 = LabelFrame(self.root, bd=2, relief=RIDGE, font=("Tahoma", 10, "bold"),
+                             bg="#263238")
         RFrame1.place(x=0, y=180, width=1600, height=900)
 
-        RFrame1 = LabelFrame(RFrame1, bd=2, relief=RIDGE, text="Employee Personal Details", font=("tahoma", 12, "bold"),
-                             bg="#65CC81")
+        RFrame1 = LabelFrame(RFrame1, bd=2, relief=RIDGE, text="Employee Personal Details",font=("tahoma", 12, "bold"),
+                             bg= '#515B60',fg='black')
         RFrame1.place(x=0, y=10, width=1600, height=900)
 
 
@@ -221,14 +181,14 @@ class attendance:
         #btnvwe.grid(row=6, column=9)
 
         # rFrame
-        RFrame = LabelFrame(self.root, bd=2, relief=RIDGE, text="Employee Details", font=("Tahoma", 10, "bold"),bg="#4AA176")
-        RFrame.place(x=5, y=440, width=1380, height=260)
+        RFrame = LabelFrame(self.root, bd=2, relief=RIDGE, text="Employee Details", font=("Tahoma", 10, "bold"),bg="#515B60",fg='black')
+        RFrame.place(x=5, y=440, width=1380, height=280)
 
         down_frame = customtkinter.CTkFrame(RFrame, bd=0, bg="White", relief=SUNKEN)
-        down_frame.place(x=2, y=5, width=1350, height=235)
+        down_frame.place(x=2, y=5, width=1350, height=250)
 
-        topBtmsbar = ttk.Scrollbar(down_frame, orient=HORIZONTAL)
-        sideBar = ttk.Scrollbar(down_frame, orient=VERTICAL)
+        topBtmsbar = customtkinter.CTkScrollbar(down_frame, orientation=HORIZONTAL)
+        sideBar = customtkinter.CTkScrollbar(down_frame, orientation=VERTICAL)
 
         self.detailtbl = ttk.Treeview(down_frame, columns=("EMPLOYEE_ID", "NAME", "DEPARTMENT", "DESIGNATION",
                                                            "JOINING_MONTH", "DOB", "GENDER", "EMAIL", "MARTIAL_STATUS",

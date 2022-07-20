@@ -9,8 +9,9 @@ from PIL import Image,ImageTk
 class login_design():
     def __init__(self, root):
         self.root=root
-        self.root.state('zoomed')
+        self.root.geometry('1100x590+180+90')
         self.root.title("login")
+        self.root.overrideredirect(True)
         self.root.iconbitmap("img\\saslog.ico")
 
         self.user=StringVar()
@@ -19,16 +20,16 @@ class login_design():
         self.combo_securityA=StringVar()
         self.new_pass=StringVar()
 
-        frame0 = customtkinter.CTkFrame(self.root, bd=0)
-        frame0.place(x=0, y=0, width=1600, height=950)
-        bgimg=Image.open(r"img\log bg.jpg")
-        bgimg.resize((500,500),Image.Resampling.LANCZOS)
-        self.img=ImageTk.PhotoImage(bgimg)
-        lbl=Label(frame0,image=self.img)
-        lbl.place(x=0,y=0)
+        #frame0 = customtkinter.CTkFrame(self.root, bd=0)
+        #frame0.place(x=0, y=0, width=1600, height=950)
+        #bgimg=Image.open("img\\pexels-ben-mack-6775241.jpg")
+        #bgimg.resize((500,500),Image.Resampling.LANCZOS)
+        #self.img=ImageTk.PhotoImage(bgimg)
+        #lbl=Label(frame0,image=self.img)
+        #lbl.place(x=0,y=0)
 
         frame1=customtkinter.CTkFrame(self.root, bd=0,relief=GROOVE,fg_color="#263238",bg_color="grey")
-        frame1.place(x=150, y=70, width=1100, height=590)
+        frame1.place(x=0, y=0, width=1100, height=590)
 
 ####################
         signuptxt=customtkinter.CTkLabel(frame1,text="Sign in",text_font=("Tahoma",15,"bold"),fg_color="#263238",text_color="white")
@@ -69,7 +70,7 @@ class login_design():
     def fgt_pass(self):
         self.root1 = Toplevel()
         self.root1.title("Forgot Password")
-        self.root1.geometry('450x477+150+175')
+        self.root1.geometry('450x477+180+175')
         self.root1.config(bg="#263238")
 
         flbl = customtkinter.CTkLabel(self.root1, text="Forgot Password", text_font=("Tahoma", 10, "bold"),bg_color="#263238", fg_color="orange",width=450)
@@ -108,7 +109,7 @@ class login_design():
             messagebox.showerror("Error","Fill all the field")
         elif self.user_entry.get()=="Akshay10" and self.pswd_entry.get()=="sas123":
             messagebox.showinfo("Welcome", "Welcome to S A S")
-            self.nxt_win=Toplevel(self.root)
+            self.nxt_win=customtkinter.CTkToplevel(self.root)
             self.root=face_Recog(self.nxt_win)
 
         else:
