@@ -4,7 +4,6 @@ import customtkinter
 from PREDICTION import carpredict
 from AttsNpage import attendance
 from face_recog31 import realpredict
-#from face_Recog_test import realpredict
 
 class face_Recog:
     def __init__(self,root):
@@ -27,12 +26,6 @@ class face_Recog:
 
         logi_in = Label(self.root, text="SMART AUTHORIZING SYSTEM", font=("Tahoma", 20, "bold"), fg="#f5f5f5", bg="#263238",width=80,height=3, bd=2)
         logi_in.place(x=100, y=0)
-
-        #img2=Image.open("flc_design2022053147056.png")
-        #img2=img2.resize((300,100),Image.ANTIALIAS)
-        #self.photoimg3=ImageTk.PhotoImage(img2)
-        #trdlbl=Label(self.root,image=self.photoimg3)
-        #trdlbl.place(x=550,y=0,width=300,height=100)
 
         LFrame = customtkinter.CTkFrame(self.root, bd=0, relief=RIDGE,fg_color="#263238")
         LFrame.place(x=150, y=130, width=1100, height=550)
@@ -70,14 +63,6 @@ class face_Recog:
         lbltxt = customtkinter.CTkLabel(self.root, text="PLATE FINDER",relief=SUNKEN,anchor='center', fg_color="#2E86C1",bg_color="#263238", text_font=("Tahoma ", 9, "bold"))
         lbltxt.place(x=1100, y=295, width=101, height=30)
 
-        #stdimg2 = Image.open("trainimg.jpg")
-        #stdimg2 = stdimg2.resize((100, 100), Image.ANTIALIAS)
-        #self.photoimg6 = ImageTk.PhotoImage(stdimg2)
-        #b4 = customtkinter.CTkButton(self.root, image=self.photoimg6,cursor="hand2",fg_color="#2ECC71",bg_color="#263238",text="0")
-        #b4.place(x=700, y=410, width=101, height=100)
-        #lbltxt = customtkinter.CTkLabel(self.root, text="TRAIN DATA",relief=SUNKEN,anchor='center', fg_color="#2ECC71",bg_color="#263238", text_font=("Tahoma ", 9, "bold"))
-        #lbltxt.place(x=700, y=495, width=101, height=30)
-
         stdimg3 = Image.open("img\\exitimg.jpg")
         stdimg3 = stdimg3.resize((100, 100), Image.Resampling.LANCZOS)
         self.photoimg7 = ImageTk.PhotoImage(stdimg3)
@@ -91,12 +76,14 @@ class face_Recog:
         self.app=attendance(self.new_window)
 
     def attns(self):
-        self.new_window2=Toplevel(self.root)
-        self.atn=realpredict(self.new_window2)
+        self.new_window1=Toplevel(self.root)
+        self.atn=realpredict(self.new_window1)
+        self.new_window1.grab_set()
 
     def carplt(self):
         self.new_window2=Toplevel(self.root)
         self.atn=carpredict(self.new_window2)
+        self.new_window2.grab_set()
 
 if __name__ == '__main__':
     root=Tk()

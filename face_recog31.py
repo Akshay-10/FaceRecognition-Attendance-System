@@ -29,7 +29,6 @@ class realpredict:
 
         fstlbl = Label(self.root, image=self.photoimg)
         fstlbl.place(x=0, y=100, width=1530, height=990)
-
         # OOOOOOOOO
 
         img1 = Image.open("img\\6b77beffb8d54b09b7414bd72c07342e.png")
@@ -72,7 +71,7 @@ class realpredict:
         self.bg_img1.place(x=0, y=0)
 
         #topBtmsbar = ttk.Scrollbar(down_frame, orient=HORIZONTAL)
-        sideBar = ttk.Scrollbar(down_frame, orient=VERTICAL)
+        sideBar = customtkinter.CTkScrollbar(down_frame, orientation=VERTICAL,scrollbar_hover_color='red',scrollbar_color='#263238',width=12)
 
         self.detailtbl = ttk.Treeview(down_frame, columns=("EMPLOYEE_ID", "NAME", "DATE", "TIME"),yscrollcommand=sideBar.set,height=500)
         #topBtmsbar.pack(side=BOTTOM, fill=X)
@@ -96,7 +95,7 @@ class realpredict:
 
     def back(self):
         if(self.cam_start==1):
-            root.destroy()
+            self.root.destroy()
         else:
             messagebox.showwarning("WARNING","STOP THE CAMARA BEFORE GOING BACK", parent=self.root)
     def fetch_data(self):
@@ -133,36 +132,16 @@ class realpredict:
         today = datetime.date.today()
 
         date1 = today.strftime("%Y-%m-%d")
-        conn = mysql.connector.connect(user='adminuser', password='Akshay10', host='35.90.7.49', database='sas',
-                                       port='3306')
-
-        '''conn = mysql.connector.connect(user='root', password='password', host='localhost', database='sas',
-                                       auth_plugin=' caching_sha2_password')'''
+        conn = mysql.connector.connect(user='adminuser', password='Akshay10', host='35.90.7.49', database='sas',port='3306')
         my_cursor = conn.cursor()
         my_cursor.execute(("SELECT EMPLOYEE_ID FROM attendance WHERE DATE=%s"), (date1,))
         prev_attendance = my_cursor.fetchall()
 
         today = "ATTENDANCE/" + today.strftime("%d_%m_%Y") + ".csv"
-        # prev_attendance=[]
-        # curr_attendance=[]
         encodes = load('face.npy')
         labels = {}
-
         with open("labels.pickle", 'rb') as f:
             labels = pickle.load(f)
-
-        """with open(today,'a+',encoding='UTF8',newline='')as file:
-                writer=csv.writer(file)
-                if os.path.getsize(today)==0:
-                    writer.writerow(['ID','NAME','TIMING'])
-
-        with open(today,'r+')as file:
-            reader=csv.reader(file)
-            for row in reader:
-                prev_attendance.append(row)
-            else:
-                pass
-        prev_attendance.pop(0)"""
         print(prev_attendance)
 
         cap = cv2.VideoCapture(1)
@@ -173,7 +152,6 @@ class realpredict:
             #cv2.imshow("frame", frame)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             face1 = face_cascade1.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=6)
-
             warnings.filterwarnings("ignore", category=DeprecationWarning)
 
             if face1 != ():
@@ -242,12 +220,6 @@ class realpredict:
                 self.bg_img1["image"] = self.photoimg4
                 root.update()
                 break
-
-        """print('current',curr_attendance)
-        with open(today,'a+',encoding='UTF8',newline='')as file:
-                writer=csv.writer(file)
-                for i in curr_attendance:
-                    writer.writerow(i)"""
         cap.release()
         cv2.destroyAllWindows()
 

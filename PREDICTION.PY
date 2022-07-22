@@ -71,9 +71,9 @@ class carpredict:
         self.bg_img1 = customtkinter.CTkLabel(leftframe, image=self.photoimg4, fg_color="black", bg_color="black")
         self.bg_img1.place(x=0, y=0)
 
-        sideBar = ttk.Scrollbar(down_frame, orient=VERTICAL)
+        sideBar = customtkinter.CTkScrollbar(down_frame, orientation=VERTICAL,scrollbar_hover_color='red',scrollbar_color='#263238',width=12)
 
-        self.detailtbl = ttk.Treeview(down_frame, columns=("VEHICLE_NUMBER","TIME"),
+        self.detailtbl = ttk.Treeview(down_frame, columns=("VEHICLE_NUMBER","ENTRY_TIME","EXIT_TIME"),
                                       yscrollcommand=sideBar.set, height=500)
         # topBtmsbar.pack(side=BOTTOM, fill=X)
         sideBar.pack(side=RIGHT, fill=Y)
@@ -81,16 +81,17 @@ class carpredict:
         sideBar.config(command=self.detailtbl.yview)
 
         self.detailtbl.heading("VEHICLE_NUMBER", text="VEHICLE_NUMBER")
-        self.detailtbl.heading("TIME", text="TIME")
+        self.detailtbl.heading("ENTRY_TIME", text="ENTRY_TIME")
+        self.detailtbl.heading("EXIT_TIME",text="EXIT_TIME")
         self.detailtbl["show"] = "headings"
         self.detailtbl.column("VEHICLE_NUMBER", width=100)
-        self.detailtbl.column("TIME", width=100)
-
+        self.detailtbl.column("ENTRY_TIME", width=100)
+        self.detailtbl.column("EXIT_TIME", width=100)
         self.detailtbl.pack(fill=BOTH, expand=0)
 
     def back(self):
         if(self.cam_start==1):
-            root.destroy()
+            self.root.destroy()
         else:
             messagebox.showwarning("WARNING","STOP THE CAMARA BEFORE GOING BACK", parent=self.root)
 
@@ -98,181 +99,144 @@ class carpredict:
         self.cam_start = 1
 
     def cplt(self):
-        self.cam_start = 0
-        today = datetime.date.today()
-        today = "entry/" + today.strftime("%d_%m_%Y") + ".csv"
+        size=0
+        today=datetime.date.today()
+        today="entry/"+today.strftime("%d_%m_%Y")+".csv"
         print(today)
-        size = 0
-        with open(today, 'a+') as file:
-            writer = csv.writer(file)
-            if os.path.getsize(today) == 0:
-                writer.writerow(['VEHICLE_NUMBER', 'ENTRY_TIME', 'EXIT_TIME'])
-            size = os.path.getsize(today)
-        print(os.path.getsize(today))
+        with open(today,'a+')as file:
+            writer=csv.writer(file)
+            if os.path.getsize(today)==0:
+                writer.writerow(['VEHICLE_NUMBER','ENTRY_TIME','EXIT_TIME'])
+                size = os.path.getsize(today)
         entry_list = []
         prev_attendance = []
-
         with open(today, 'r+') as file:
             reader = csv.reader(file)
-            if size > 28:
+            if size > 37:
                 for row in reader:
                     if row != []:
                         prev_attendance.append(row[0])
-
         pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
-        INPUT_WIDTH = 640
-        INPUT_HEIGHT = 640
+        INPUT_WIDTH=640
+        INPUT_HEIGHT=640
 
-        mod = cv2.dnn.readNetFromONNX('./Model/weights/best.onnx')  # mod store the model which is goiing to predict
-        mod.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)  # set the backend for our model
-        mod.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)  # set the target for our model
+        mod=cv2.dnn.readNetFromONNX('best.onnx')
+        mod.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
+        mod.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
 
-        def get_dedect(img, mod):
-            image = img.copy()
-            row, col, d = image.shape
-            max_rc = max(row, col)  # it store the maximum value of row and column
-            input_image = ny.zeros((max_rc, max_rc, 3), dtype=ny.uint8)
-            input_image[0:row, 0:col] = image
-            # the above statement is used to convert image into yolo format.
-            # photo la mela image and kila blank ah erukum ethu oda output.
+        def get_dedect(img,mod):
+            image=img.copy()
+            row,col,d= image.shape
+            max_rc=max(row,col)
+            input_image=ny.zeros((max_rc,max_rc,3),dtype=ny.uint8)
+            input_image[0:row,0:col]=image
 
-            blob = cv2.dnn.blobFromImage(input_image, 1 / 255, (INPUT_WIDTH, INPUT_HEIGHT), swapRB=True, crop=False)
-            # input_image is a yolo format input,scale factor is 1/255,size of the image will set 640*640
+            blob=cv2.dnn.blobFromImage(input_image,1/255,(INPUT_WIDTH,INPUT_HEIGHT),swapRB=True,crop=False)
             mod.setInput(blob)
-            pred = mod.forward()  # pred.shape->eg:(1,25200,6)it will display the 3dimension input but we need 2dimension
-            detect = pred[
-                0]  # detect.shpaeso->eg:(25200,6),we convert into 2dimension eg:(25200,6)->(row,column) 6 is very important
-            # centerX,centerY,width,heigth,confidence,probability score
-            # (centerX,centerY,width,heigth)->info of bound box it is normalized by 640/640
-            # confidence is basically define the detection confidence score.
-            # probability score of the class.in our project we have one class that is license plate.
-            return input_image, detect
+            pred=mod.forward()
+            detect=pred[0]
+            return input_image,detect
 
-        # filter based on confidence,probability score
-        def non_maxi(input_image, detect):
-            boxes = []
-            confidences = []
-            img_w, img_h = input_image.shape[:2]  # it store the w,h of the yolo format image
-            xfactor = img_w / INPUT_WIDTH
-            yfactor = img_h / INPUT_HEIGHT
-            for i in range(len(detect)):  # the detect has nearly 25220 rows and each row has 6 column.
-                row = detect[i]  # each row come one by one
-                confidence = row[4]  # The confidense is present in the fourth column so we assigning
-                if confidence > 0.4:  # for good bounding box the confidence should be greater than 0.4
-                    class_score = row[5]  # class score is the probability score of the number plate
-                    # if print here the confidence it display few value among 225500 which confidence greater than 0.4.
-                    if class_score > 0.25:  # then we filter the class score is greater than 0.25 it reduce few value
-                        cx, cy, w, h = row[0:4]
-                        left = int((cx - 0.5 * w) * xfactor)
-                        top = int((cy - 0.5 * h) * yfactor)
-                        width = int(w * xfactor)
-                        height = int(h * yfactor)
-                        box = ny.array([left, top, width, height])
+        def non_maxi(input_image,detect):
+            boxes=[]
+            confidences=[]
+            img_w,img_h=input_image.shape[:2]
+            xfactor=img_w/INPUT_WIDTH
+            yfactor=img_h/INPUT_HEIGHT
+            for i in range(len(detect)):
+                row=detect[i]
+                confidence=row[4]
+                if confidence>0.4:
+                    class_score=row[5]
+                    if class_score>0.25:
+                        cx,cy,w,h=row[0:4]
+                        left=int((cx-0.5*w)*xfactor)
+                        top=int((cy-0.5*h)*yfactor)
+                        width=int(w*xfactor)
+                        height=int(h*yfactor)
+                        box=ny.array([left,top,width,height])
                         confidences.append(confidence)
                         boxes.append(box)
-            # yolo give a multiple bounding boxes.so,we doing non maximum supresion
-            nyboxes = ny.array(boxes).tolist()
-            nyconfidences = ny.array(confidences).tolist()
-            # the above 2 statement is cleaning our data by converting into list
-            ind = cv2.dnn.NMSBoxes(nyboxes, nyconfidences, 0.25,
-                                   0.45)  # it will give non repeateded bounding box and give exact number plate
-            print("index", ind)
-            warnings.filterwarnings("ignore", category=DeprecationWarning)
-            if ind != ():
-                index = ind.flatten()
-                print("flattern index", index)
-                return nyboxes, nyconfidences, index
+            nyboxes=ny.array(boxes).tolist()
+            nyconfidences=ny.array(confidences).tolist()
+            ind=cv2.dnn.NMSBoxes(nyboxes,nyconfidences,0.25,0.45)
+
+            warnings.filterwarnings("ignore",category=DeprecationWarning)
+            if ind!=():
+                index=ind.flatten()
+
+                return nyboxes,nyconfidences,index
             else:
-                return nyboxes, nyconfidences, ()
+                return nyboxes,nyconfidences,()
 
-        def borders(image, nyboxes, nyconfidences, index):
+        def borders(image,nyboxes,nyconfidences,index):
             for i in index:
-                x, y, w, h = nyboxes[i]
-                bb_confi = nyconfidences[i]
-                conf_text = 'plate: {:.0f}%'.format(bb_confi * 100)
-                plate_text = extract_text(image, nyboxes[i])
-                print("hello", plate_text)
-                cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 255), 2)  # 2 is a thickness
-                cv2.rectangle(image, (x, y - 30), (x + w, y), (255, 0, 255), -1)
-                cv2.rectangle(image, (x, y + h), (x + w, y + h + 30), (0, 0, 0), -1)
+                x,y,w,h=nyboxes[i]
+                bb_confi=nyconfidences[i]
+                conf_text='plate: {:.0f}%'.format(bb_confi*100)
+                plate_text=extract_text(image,nyboxes[i])
 
-                cv2.putText(image, conf_text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
-                cv2.putText(image, plate_text, (x, y + h + 27), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 1)
+                cv2.rectangle(image,(x,y),(x+w,y+h),(255,0,255),2)
+                cv2.rectangle(image,(x,y-30),(x+w,y),(255,0,255),-1)
+                cv2.rectangle(image,(x,y+h),(x+w,y+h+30),(0,0,0),-1)
+
+                cv2.putText(image,conf_text,(x,y-10),cv2.FONT_HERSHEY_SIMPLEX,0.7,(255,255,255),1)
+                cv2.putText(image,plate_text,(x,y+h+27),cv2.FONT_HERSHEY_SIMPLEX,0.7,(0,255,0),1)
                 return image
 
-        def predicts(img, mod):
-            input_image, detect = get_dedect(img, mod)
-            nyboxes, nyconfidences, index = non_maxi(input_image, detect)
-            print("1", index)
+        def predicts(img,mod):
+            input_image,detect=get_dedect(img,mod)
+            nyboxes,nyconfidences,index=non_maxi(input_image,detect)
+
             if index != ():
-                result_img = borders(img, nyboxes, nyconfidences, index)
-                print("result_img", result_img)
+                result_img=borders(img,nyboxes,nyconfidences,index)
+
                 return result_img
             else:
                 return ()
 
-        def extract_text(image, bbox):
-            x, y, w, h = bbox
-            roi = image[y:y + h, x:x + w]
+        def extract_text(image,bbox):
+            x,y,w,h=bbox
+            roi=image[y:y+h,x:x+w]
             if 0 in roi.shape:
                 return ''
             else:
-                # reader=easyocr.Reader(['en'])
-                # text=reader.readtext(roi)
-                text = pytesseract.image_to_string(roi)
-                text = text.strip()
+                text=pytesseract.image_to_string(roi)
+                text=text.strip()
                 text = ''.join(char for char in text if char.isalnum())
-                i = []
-                prev_entry=[]
                 if text != "" and text != " ":
-                    if text in prev_attendance:
-                        x = prev_attendance.index(text)
-                        time1 = datetime.datetime.now()
-                        print(prev_attendance,x)
-                        if time1 > prev_entry[x] + pd.DateOffset(minutes=2):
-                            time1 = time1.strftime("%H:%M:%S")
-                            i[x][-1] += time1
-
                     if text not in prev_attendance:
-                        time11 = datetime.datetime.now()
-                        time1 = time11.strftime("%H:%M:%S")
-                        i = [text, time1, ' ']
+                        time1 = datetime.datetime.now()
+                        #time1 = time1.strftime("%H:%M:%S")
+                        i = [text, time1,"00:00:00"]
                         entry_list.append(i)
                         prev_attendance.append(text)
-                        prev_entry.append(time11)
-                        print(i)
+                    else:
+                        x = prev_attendance.index(text)
+                        time1 = datetime.datetime.now()
+                        if time1 > entry_list[x][1] + pd.DateOffset(minutes=1):
+                            entry_list[x][2]=time1.strftime("%H:%M:%S")
                 return text
 
         cap = cv2.VideoCapture(1)
         while True:
-            ret, frame = cap.read()
-
-            if ret == False:
-                print('unable to read video')
+            ret,frame=cap.read()
+            cv2.imshow("frame",frame)
+            if ret==False:
+                messagebox.showerror("Error","UNABLE TO READ")
                 break
-            results = predicts(frame, mod)
-            print("results", results)
-            if results != ():
-                cv2.namedWindow('YOLO', cv2.WINDOW_KEEPRATIO)
-                cv2.imshow('YOLO', results)
-            cv2.imshow("frame", frame)
+            results=predicts(frame,mod)
 
-                # cv2.imshow("frame", frame)
-            frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            frame2 = ImageTk.PhotoImage(Image.fromarray(frame2).resize((700, 500), Image.Resampling.LANCZOS))
-            self.bg_img1["image"] = frame2
-            root.update()
-            if self.cam_start == 1:
-                self.bg_img1["image"] = self.photoimg4
-                root.update()
-                break
-
-        #with open(today, 'a+', encoding='UTF8', newline='') as file:
-         #   writer = csv.writer(file)
-          #  for i in entry_list:
-           #     writer.writerow(i)
-
+            if results!=():
+                cv2.namedWindow('YOLO',cv2.WINDOW_KEEPRATIO)
+                cv2.imshow('YOLO',results)
+            if cv2.waitKey(1) == 65:
+                    break
+        with open(today, 'a+', encoding='UTF8', newline='') as file:
+            writer = csv.writer(file)
+            for i in entry_list:
+                writer.writerow(i)
         cv2.destroyAllWindows()
         cap.release()
 

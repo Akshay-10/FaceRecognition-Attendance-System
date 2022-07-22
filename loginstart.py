@@ -1,17 +1,17 @@
 from tkinter import *
 import customtkinter
 from tkinter import messagebox
-from tkinter import ttk
 from NextPage import face_Recog
 import mysql.connector
 from PIL import Image,ImageTk
+
 
 class login_design():
     def __init__(self, root):
         self.root=root
         self.root.geometry('1100x590+180+90')
-        self.root.title("login")
         self.root.overrideredirect(True)
+        self.root.title("login")
         self.root.iconbitmap("img\\saslog.ico")
 
         self.user=StringVar()
@@ -19,14 +19,6 @@ class login_design():
         self.comb_security=StringVar()
         self.combo_securityA=StringVar()
         self.new_pass=StringVar()
-
-        #frame0 = customtkinter.CTkFrame(self.root, bd=0)
-        #frame0.place(x=0, y=0, width=1600, height=950)
-        #bgimg=Image.open("img\\pexels-ben-mack-6775241.jpg")
-        #bgimg.resize((500,500),Image.Resampling.LANCZOS)
-        #self.img=ImageTk.PhotoImage(bgimg)
-        #lbl=Label(frame0,image=self.img)
-        #lbl.place(x=0,y=0)
 
         frame1=customtkinter.CTkFrame(self.root, bd=0,relief=GROOVE,fg_color="#263238",bg_color="grey")
         frame1.place(x=0, y=0, width=1100, height=590)
@@ -67,11 +59,12 @@ class login_design():
         fgtpass.place(x=690,y=375)
 ########################
 
-    def fgt_pass(self):
+    '''def fgt_pass(self):
         self.root1 = Toplevel()
         self.root1.title("Forgot Password")
         self.root1.geometry('450x477+180+175')
         self.root1.config(bg="#263238")
+        self.root1.iconbitmap("img\\saslog.ico")
 
         flbl = customtkinter.CTkLabel(self.root1, text="Forgot Password", text_font=("Tahoma", 10, "bold"),bg_color="#263238", fg_color="orange",width=450)
         flbl.place(x=0, y=10)
@@ -102,39 +95,90 @@ class login_design():
         if row==None:
             messagebox.showerror("Error","Please enter the valid email id")
         else:
+            connection.close()'''
+    def fgt_pass(self):
+        self.root1 = Toplevel()
+        self.root1.title("Forgot Password")
+        self.root1.geometry('450x477+180+175')
+        self.root1.config(bg="#263238")
+        self.root1.iconbitmap("img\\saslog.ico")
+
+        flbl = customtkinter.CTkLabel(self.root1, text="Forgot Password", text_font=("Tahoma", 10, "bold"),bg_color="#263238", fg_color="orange",width=450)
+        flbl.place(x=0, y=10)
+
+        schlbl = customtkinter.CTkLabel(self.root1, text="Email Id",text_font=("Tahoma", 10, "bold"),text_color='white',bg_color="#263238",fg_color="#263238",width=90)
+        schlbl.place(x=40, y=70)
+        schcomb =customtkinter.CTkEntry(self.root1, width=300,height=20,text_font=("times new roman", 10),text_color='white',border_width=0,fg_color='black',cursor="hand2")
+        schcomb.place(x=55, y=100)
+
+        fgtpass = customtkinter.CTkButton(self.root1, text="verify", command=lambda: self.verify(schcomb.get()),
+                                          height=0, width=0,
+                                          bd=0, text_font=("Tahoma", 10, "bold"), fg_color="#263238",
+                                          text_color="#fa333e", cursor="hand2")
+        fgtpass.place(x=370, y=100)
+
+        self.anwlbl = customtkinter.CTkLabel(self.root1, text="New Password", text_font=("Tahoma", 10, "bold"),
+                                  text_color='white', bg_color="#263238", fg_color="#263238", width=90)
+
+        self.ans_entry = customtkinter.CTkEntry(self.root1, width=300, height=20, text_font=("times new roman", 10),
+                                                text_color='white', border_width=0, fg_color='black', show='*',
+                                                cursor="hand2")
+
+        self.pass_lbl = customtkinter.CTkLabel(self.root1, text="Confirm Password", text_font=("Tahoma", 10, "bold"),
+                                               text_color='white', bg_color="#263238", fg_color="#263238", width=90)
+
+        self.pass_entry = customtkinter.CTkEntry(self.root1, width=300, height=20, text_font=("times new roman", 10),
+                                                 text_color='white', border_width=0, fg_color='black', show='*',
+                                                 cursor="hand2")
+
+        self.restbut = customtkinter.CTkButton(self.root1, text='Reset',command=lambda: self.changepassword(schcomb.get(),self.ans_entry.get(),self.pass_entry.get()), text_font=("Tahoma", 15, "bold"),
+                                               text_color='orange', bg_color="#263238", fg_color="#263238", width=1,
+                                               cursor="hand2")
+
+    def verify(self,email):
+        print(email)
+        connection = mysql.connector.connect(user='adminuser', password='Akshay10', host='35.90.7.49', database='sas',port='3306')
+        my_cursor = connection.cursor()
+        my_cursor.execute("select count(*) from regsaved where email=%s", (email,))
+        row = my_cursor.fetchone()
+        connection.close()
+        if(row[0]==1):
+            self.anwlbl.place(x=50, y=130)
+            self.ans_entry.place(x=55, y=160)
+            self.pass_lbl.place(x=50, y=190)
+            self.pass_entry.place(x=55, y=220)
+            self.restbut.place(x=280, y=250)
+
+    def changepassword(self,email,password,c_password):
+        print(email,password,c_password)
+        if(password==c_password):
+            connection = mysql.connector.connect(user='adminuser', password='Akshay10', host='35.90.7.49',database='sas', port='3306')
+            my_cursor = connection.cursor()
+            my_cursor.execute("update regsaved set pswd_entry=%s where email=%s", (password,email))
+            connection.commit()
             connection.close()
+            messagebox.showinfo("SUCCESS","Successfully updated")
+        else:
+            messagebox.showinfo("ERROR","New Password and Conform Password is not matched")
 
     def login(self):
-        if self.user_entry.get=="" or self.pswd_entry.get()=="":
+        if self.user_entry.get()=="" or self.pswd_entry.get()=="":
             messagebox.showerror("Error","Fill all the field")
-        elif self.user_entry.get()=="Akshay10" and self.pswd_entry.get()=="sas123":
-            messagebox.showinfo("Welcome", "Welcome to S A S")
-            self.nxt_win=customtkinter.CTkToplevel(self.root)
-            self.root=face_Recog(self.nxt_win)
-
         else:
             connection = mysql.connector.connect(user='adminuser', password='Akshay10', host='35.90.7.49', database='sas',port='3306')
-            '''connection=mysql.connector.connect(user='adminuser', password='Akshay10', host='35.90.7.49',
-                                               database='sas', auth_plugin= 'caching_sha2_password')'''
             my_cursor=connection.cursor()
-            my_cursor.execute("select * from regsaved where pswd_entry=%s and user_entry=%s",(
+            my_cursor.execute("select count(*) from regsaved where user_entry=%s and pswd_entry=%s",(
                 self.user_entry.get(),
                 self.pswd_entry.get()
             ))
-            row=my_cursor.fetchall()
-            print(row)
-            if len(row)==0:
+            row=my_cursor.fetchone()
+            connection.close()
+            if row==0:
                 messagebox.showerror("Error","Invalid username or password")
-            else:
-                openfr_admin=messagebox.askyesno("Access only to adimin?")
-                if openfr_admin>0:
-                    self.nxt_win=Toplevel(self.root)
-                    self.root=face_Recog(self.nxt_win)
-                else:
-                    if not openfr_admin:
-                        return
-                connection.commit()
-                connection.commit()
+            elif row[0]==1:
+                messagebox.showinfo("Welcome", "Welcome to S A S")
+                self.nxt_win = Toplevel(self.root)
+                self.root = face_Recog(self.nxt_win)
 
 if __name__ == '__main__':
     root=Tk()

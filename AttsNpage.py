@@ -151,31 +151,31 @@ class attendance:
         empadsbox.grid(row=3, column=1, padx=5, sticky=W)
 
 
-        RFrame2 = LabelFrame(RFrame1,bd=0,background="white",foreground="white")
-        RFrame2.place(x=1200, y=5, width=140, height=160)
-        image1 = Image.open(r"images//1.jpeg")
+        RFrame2 = LabelFrame(RFrame1,background="white",foreground="white",bg='grey',borderwidth=2)
+        RFrame2.place(x=1150, y=5, width=150, height=160)
+        image1 = Image.open("images\\1.webp")
         image1 = image1.resize((140,160), Image.Resampling.LANCZOS)
         self.photoimg3 = ImageTk.PhotoImage(image1)
         self.photo=Label(RFrame2,image=self.photoimg3,background="white",width=140,height=160)
         self.photo.grid(row=0,column=0)
 
-        btnphto = customtkinter.CTkButton(RFrame1, text="Take Photo",command=lambda :self.facecaps(empbox.get(),0),fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=15,cursor="hand2")
-        btnphto.grid(row=6, column=0)
+        btnphto = customtkinter.CTkButton(RFrame1, text="Take Photo",command=lambda :self.facecaps(empbox.get(),0),fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=150,cursor="hand2")
+        btnphto.place(x=10,y=180)
 
-        btnphto =customtkinter.CTkButton(RFrame1, text="Update Photo",command=lambda :self.facecaps(empbox.get(),1),fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=15,cursor="hand2")
-        btnphto.grid(row=6, column=1)
+        btnphto =customtkinter.CTkButton(RFrame1, text="Update Photo",command=lambda :self.facecaps(empbox.get(),1),fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=150,cursor="hand2")
+        btnphto.place(x=200,y=180)
 
-        btnsave = customtkinter.CTkButton(RFrame1, text="Save", command=self.add_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=13,cursor="hand2")
-        btnsave.grid(row=6, column=2)
+        btnsave = customtkinter.CTkButton(RFrame1, text="Save", command=self.add_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=150,cursor="hand2")
+        btnsave.place(x=400,y=180)
 
-        btnupdt = customtkinter.CTkButton(RFrame1, text="Update", command=self.update_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=13,cursor="hand2")
-        btnupdt.grid(row=6, column=3)
+        btnupdt = customtkinter.CTkButton(RFrame1, text="Update", command=self.update_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=150,cursor="hand2")
+        btnupdt.place(x=600,y=180)
 
-        btndel = customtkinter.CTkButton(RFrame1, text="Delete", command=self.delete_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=13,cursor="hand2")
-        btndel.grid(row=6, column=4)
+        btndel = customtkinter.CTkButton(RFrame1, text="Delete", command=self.delete_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=150,cursor="hand2")
+        btndel.place(x=800,y=180)
 
-        btnres = customtkinter.CTkButton(RFrame1, text="Reset", command=self.reset_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=13,cursor="hand2")
-        btnres.grid(row=6, column=5)
+        btnres = customtkinter.CTkButton(RFrame1, text="Reset", command=self.reset_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=150,cursor="hand2")
+        btnres.place(x=1000,y=180)
 
         #btnvwe = customtkinter.CTkButton(RFrame1, text="VIEW IMAGE", command=lambda :self.choose(empbox.get()), fg_color="#fb341c",text_font=("Tahoma", 10, "bold"), width=13)
         #btnvwe.grid(row=6, column=9)
@@ -187,8 +187,8 @@ class attendance:
         down_frame = customtkinter.CTkFrame(RFrame, bd=0, bg="White", relief=SUNKEN)
         down_frame.place(x=2, y=5, width=1350, height=250)
 
-        topBtmsbar = customtkinter.CTkScrollbar(down_frame, orientation=HORIZONTAL)
-        sideBar = customtkinter.CTkScrollbar(down_frame, orientation=VERTICAL)
+        topBtmsbar = customtkinter.CTkScrollbar(down_frame, orientation=HORIZONTAL,scrollbar_hover_color='red',scrollbar_color='#263238',height=12)
+        sideBar = customtkinter.CTkScrollbar(down_frame, orientation=VERTICAL,scrollbar_color='#263238',scrollbar_hover_color='red',width=12)
 
         self.detailtbl = ttk.Treeview(down_frame, columns=("EMPLOYEE_ID", "NAME", "DEPARTMENT", "DESIGNATION",
                                                            "JOINING_MONTH", "DOB", "GENDER", "EMAIL", "MARTIAL_STATUS",
@@ -374,12 +374,6 @@ class attendance:
         self.new_window2=Toplevel(self.root)
         facecap.add_img(self.new_window2,value,i)
         attendance.choose(self,value)
-
-
-    #def faceadd(self):
-     #   self.new_window2=Toplevel(self.root)
-      #  self.atn=facecap.Addperson(self.new_window2)'''
-
 
 if __name__ == '__main__':
     root = Tk()

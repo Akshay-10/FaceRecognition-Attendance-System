@@ -37,7 +37,6 @@ class facecap:
                     file_path = parent_dir + "\\" + str(e_id) + ".jpeg"
                     cv2.imwrite(file_path, face)
                     mixer.init()
-
                     flag=1
 
             cv2.imshow("Frame", frame)
