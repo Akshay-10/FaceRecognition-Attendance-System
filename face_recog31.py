@@ -43,7 +43,7 @@ class realpredict:
 
         head = Label(self.root, text="ATTENDANCE REPORT", font=("Tahoma", 25, "bold"), bg="#263238", fg="white")
         head.place(x=-120, y=120, width=1530, height=40)
-        back = customtkinter.CTkButton(self.root, text="Back", text_font=("Tahoma", 10, "bold"), bg_color="black",fg_color="#64b5f6", command=self.back,cursor="hand2")
+        back = customtkinter.CTkButton(self.root, text="Back", text_font=("Tahoma", 10, "bold"), bg_color="#263238",fg_color="#64b5f6", command=self.back,cursor="hand2")
         back.place(x=1200, y=126)
 
         frame = Frame(self.root, bd=2)
