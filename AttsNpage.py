@@ -15,6 +15,7 @@ class attendance:
         self.root.title("Attendance System")
         self.root.overrideredirect(True)
         self.root.iconbitmap("img\\saslog.ico")
+        customtkinter.set_default_color_theme("sweetkind")
 
         self.EMPLOYEE_ID = StringVar()
         self.NAME = StringVar()
@@ -184,8 +185,9 @@ class attendance:
         RFrame = LabelFrame(self.root, bd=2, relief=RIDGE, text="Employee Details", font=("Tahoma", 10, "bold"),bg="#515B60",fg='black')
         RFrame.place(x=5, y=440, width=1380, height=280)
 
-        down_frame = customtkinter.CTkFrame(RFrame, bd=0, bg="White", relief=SUNKEN)
+        down_frame = Frame(RFrame, bd=0, bg="White", relief=SUNKEN)
         down_frame.place(x=2, y=5, width=1350, height=250)
+        customtkinter.set_default_color_theme("blue")
 
         topBtmsbar = customtkinter.CTkScrollbar(down_frame, orientation=HORIZONTAL,scrollbar_hover_color='red',scrollbar_color='#263238',height=12)
         sideBar = customtkinter.CTkScrollbar(down_frame, orientation=VERTICAL,scrollbar_color='#263238',scrollbar_hover_color='red',width=12)

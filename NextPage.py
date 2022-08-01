@@ -11,6 +11,7 @@ class face_Recog:
         root.state('zoomed')
         self.root.title("Smart Authorizing System")
         self.root.iconbitmap("img\\saslog.ico")
+        customtkinter.set_default_color_theme("sweetkind")
 
         img = Image.open(r"img\\pexels-ben-mack-6775241.jpg")
         img.resize((500,500),Image.Resampling.LANCZOS)
