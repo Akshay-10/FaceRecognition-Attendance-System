@@ -169,7 +169,7 @@ class realpredict:
         prev_attendance.pop(0)"""
         print(prev_attendance)
 
-        cap = cv2.VideoCapture(0)
+        cap = cv2.VideoCapture(1)
         while (True):
             flag = 0
             attendance_marked = 0
@@ -246,12 +246,6 @@ class realpredict:
                 self.bg_img1["image"] = self.photoimg4
                 root.update()
                 break
-
-        """print('current',curr_attendance)
-        with open(today,'a+',encoding='UTF8',newline='')as file:
-                writer=csv.writer(file)
-                for i in curr_attendance:
-                    writer.writerow(i)"""
         cap.release()
         cv2.destroyAllWindows()
 

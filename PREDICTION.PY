@@ -245,17 +245,17 @@ class carpredict:
                 frame2 = ImageTk.PhotoImage(
                     PIL.Image.fromarray(frame2).resize((700, 500), PIL.Image.Resampling.LANCZOS))
                 self.detect_vehicle["image"] = frame2
-                root.update()
+                self.root.update()
             #cv2.imshow("frame", frame)
 
                 # cv2.imshow("frame", frame)
             frame3 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             frame3 = ImageTk.PhotoImage(PIL.Image.fromarray(frame3).resize((700, 500), PIL.Image.Resampling.LANCZOS))
             self.bg_img1["image"] = frame3
-            root.update()
+            self.root.update()
             if self.cam_start == 1:
                 self.bg_img1["image"] = self.photoimg4
-                root.update()
+                self.root.update()
                 break
 
         with open(today, 'a+', encoding='UTF8', newline='') as file:

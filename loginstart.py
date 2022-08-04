@@ -5,7 +5,6 @@ from NextPage import face_Recog
 import mysql.connector
 from PIL import Image,ImageTk
 
-
 class login_design():
     def __init__(self, root):
         self.root=root
