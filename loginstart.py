@@ -10,6 +10,7 @@ class login_design():
         self.root=root
         self.root.geometry('1100x590+180+90')
         self.root.overrideredirect(True)
+        #self.root.customtkinter.deactivate_automatic_dpi_awareness()
         self.root.title("login")
         self.root.iconbitmap("img\\saslog.ico")
 
@@ -35,7 +36,7 @@ class login_design():
         bg_img = customtkinter.CTkLabel(frame1, image=self.photoimg)
         bg_img.place(x=500, y=50)
 
-        imglog1 = Image.open(r"img\\log Offince.jpg")
+        imglog1 = Image.open("img\\log Offince.jpg")
         imglog1 = imglog1.resize((450, 590), Image.Resampling.LANCZOS)
         self.photoimg1 = ImageTk.PhotoImage(imglog1)
         bg_img1 = customtkinter.CTkLabel(frame1, image=self.photoimg1)

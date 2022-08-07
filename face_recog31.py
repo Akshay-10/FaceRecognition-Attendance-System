@@ -31,7 +31,6 @@ class realpredict:
 
         fstlbl = Label(self.root, image=self.photoimg)
         fstlbl.place(x=0, y=100, width=1530, height=990)
-        # OOOOOOOOO
 
         img1 = Image.open("img\\6b77beffb8d54b09b7414bd72c07342e.png")
         img1 = img1.resize((105, 105), Image.Resampling.LANCZOS)
@@ -54,10 +53,10 @@ class realpredict:
         RFrame1 = LabelFrame(self.root, bd=2, relief=RIDGE, font=("Tahoma", 12, "bold"), bg="#263238")
         RFrame1.place(x=0, y=180, width=1600, height=900)
 
-        startcam = customtkinter.CTkButton(RFrame1, command=self.attnsmark, width=300, height=30, text="START CAMARA",text_font=("Tahoma", 15), fg_color="#fb341c",cursor="hand2")
+        startcam = customtkinter.CTkButton(RFrame1, command=self.attnsmark, width=300, height=30, text="START CAMERA",text_font=("Tahoma", 15), fg_color="#fb341c",cursor="hand2")
         startcam.place(x=730, y=290)
 
-        stopcam = customtkinter.CTkButton(RFrame1, command=self.stopcamara, width=300, height=30, text="STOP CAMARA",text_font=("Tahoma", 15), fg_color="#fb341c",cursor="hand2")
+        stopcam = customtkinter.CTkButton(RFrame1, command=self.stopcamara, width=300, height=30, text="STOP CAMERA",text_font=("Tahoma", 15), fg_color="#fb341c",cursor="hand2")
         stopcam.place(x=1050, y=290)
 
         customtkinter.set_default_color_theme("blue")
@@ -72,14 +71,12 @@ class realpredict:
         self.photoimg4 = ImageTk.PhotoImage(img1)
         self.bg_img1 = customtkinter.CTkLabel(leftframe, image=self.photoimg4, fg_color="black", bg_color="black")
         self.bg_img1.place(x=0, y=0)
-
-        #topBtmsbar = ttk.Scrollbar(down_frame, orient=HORIZONTAL)
         sideBar = customtkinter.CTkScrollbar(down_frame, orientation=VERTICAL,scrollbar_hover_color='red',scrollbar_color='#263238',width=12)
 
         self.detailtbl = ttk.Treeview(down_frame, columns=("EMPLOYEE_ID", "NAME", "DATE", "TIME"),yscrollcommand=sideBar.set,height=500)
-        #topBtmsbar.pack(side=BOTTOM, fill=X)
+
         sideBar.pack(side=RIGHT, fill=Y)
-        #topBtmsbar.config(command=self.detailtbl.xview)
+
         sideBar.config(command=self.detailtbl.yview)
 
         self.detailtbl.heading("EMPLOYEE_ID", text="EMPLOYEE_ID")
@@ -94,7 +91,7 @@ class realpredict:
 
         self.detailtbl.pack(fill=BOTH, expand=0)
         self.fetch_data()
-        # self.detailtbl.bind("<ButtonRelease>", self.get_cursor)
+
 
     def back(self):
         if (self.cam_start == 1):
@@ -107,7 +104,7 @@ class realpredict:
         date1 = today.strftime("%Y-%m-%d")
         conn = mysql.connector.connect(user='adminuser', password='Akshay10', host='35.90.7.49', database='sas',
                                        port='3306')
-        '''conn = mysql.connector.connect(user='root', password='password', host='localhost', database='sas', auth_plugin='caching_sha2_password')'''
+
         my_cursor = conn.cursor()
         my_cursor.execute("select * from attendance  WHERE DATE=%s", (date1,))
         data = my_cursor.fetchall()
@@ -132,41 +129,33 @@ class realpredict:
 
     def attnsmark(self):
         self.cam_start = 0
-        face_cascade1 = cv2.CascadeClassifier('data\\haarcascade_frontalface_alt2.xml')
+        face_cascade1 = cv2.CascadeClassifier('data/haarcascade_frontalface_alt2.xml')
 
         today = datetime.date.today()
 
         date1 = today.strftime("%Y-%m-%d")
         conn = mysql.connector.connect(user='adminuser', password='Akshay10', host='35.90.7.49', database='sas',
                                        port='3306')
-
-        '''conn = mysql.connector.connect(user='root', password='password', host='localhost', database='sas',
-                                       auth_plugin=' caching_sha2_password')'''
         my_cursor = conn.cursor()
         my_cursor.execute(("SELECT EMPLOYEE_ID FROM attendance WHERE DATE=%s"), (date1,))
         prev_attendance = my_cursor.fetchall()
 
-        today = "ATTENDANCE/" + today.strftime("%d_%m_%Y") + ".csv"
-        # prev_attendance=[]
-        # curr_attendance=[]
-        encodes = load('face.npy')
-        labels = {}
+        face_encodes = load('face.npy',allow_pickle=True)
+        encodes=[]
+        labels=[]
+        for i in range(0,len(face_encodes)):
+            l=[]
+            for j in range(0,len(face_encodes[i])):
+                if(j==0 or j==1):
+                    l.append(face_encodes[i][j])
+                else:
+                    encodes.append(face_encodes[i][j])
+            labels.append(l)
 
-        with open("labels.pickle", 'rb') as f:
-            labels = pickle.load(f)
-
-        """with open(today,'a+',encoding='UTF8',newline='')as file:
-                writer=csv.writer(file)
-                if os.path.getsize(today)==0:
-                    writer.writerow(['ID','NAME','TIMING'])
-
-        with open(today,'r+')as file:
-            reader=csv.reader(file)
-            for row in reader:
-                prev_attendance.append(row)
-            else:
-                pass
-        prev_attendance.pop(0)"""
+        print(labels)
+        print(encodes)
+        #with open("labels.pickle", 'rb') as f:
+            #labels = pickle.load(f)
         print(prev_attendance)
 
         cap = cv2.VideoCapture(1)
@@ -174,7 +163,6 @@ class realpredict:
             flag = 0
             attendance_marked = 0
             ret, frame = cap.read()
-            # cv2.imshow("frame", frame)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             face1 = face_cascade1.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=6)
             warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -197,8 +185,8 @@ class realpredict:
                     for i in range(len(comparison)):
                         if comparison[i] == True:
                             flag = 1
-                            emp_id = labels[i + 1][0]
-                            emp_name = labels[i + 1][1]
+                            emp_id = labels[i][0]
+                            emp_name = labels[i][1]
                             timing = datetime.datetime.now()
                             time1 = timing.strftime("%H:%M:%S")
 
@@ -208,8 +196,6 @@ class realpredict:
                                     mixer.init()
                                     mixer.music.load("audios\\already_marked.mp3")
                                     cv2.putText(frame, emp_name, (10, 400), font, 1, (0, 0, 0), 2, cv2.LINE_AA)
-                                    # check=cv2.cvtColor(check_img,cv2.COLOR_BGR2RGB)
-                                    # cv2.imshow(emp_name,check);
                                     mixer.music.play()
                                     attendance_marked = 1
                                     break
@@ -217,16 +203,12 @@ class realpredict:
                                 my_cursor.execute(("INSERT INTO attendance VALUES(%s, %s, %s, %s)"),
                                                   mark_attendance)
                                 conn.commit()
-                                # curr_attendance.append(mark_attendance)
                                 prev_attendance.append((emp_id,))
                                 self.fetch_data()
                                 mixer.init()
                                 mixer.music.load("audios\\marked.mp3")
                                 cv2.putText(frame, emp_name, (10, 400), font, 2, (0, 0, 0), 4, cv2.LINE_AA)
-                                # check = cv2.cvtColor(check_img, cv2.COLOR_BGR2RGB)
-                                # cv2.imshow(emp_name, check);
                                 mixer.music.play()
-                                # time.sleep(10)
                                 attendance_marked = 1
 
                                 break
@@ -235,16 +217,15 @@ class realpredict:
                         mixer.music.load("audios\\unknown.mp3")
                         cv2.putText(frame, "UNKNOWN", (10, 400), font, 1, (255, 255, 255), 2, cv2.LINE_AA)
                         mixer.music.play()
-            # cv2.imshow("frame", frame)
             frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             frame2 = ImageTk.PhotoImage(Image.fromarray(frame2).resize((700, 500), Image.Resampling.LANCZOS))
             self.bg_img1["image"] = frame2
-            root.update()
+            self.root.update()
             if (attendance_marked == 1):
                 time.sleep(5)
             if self.cam_start == 1:
                 self.bg_img1["image"] = self.photoimg4
-                root.update()
+                self.root.update()
                 break
         cap.release()
         cv2.destroyAllWindows()

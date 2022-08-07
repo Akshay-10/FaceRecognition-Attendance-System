@@ -12,6 +12,8 @@ import PIL.Image
 import customtkinter
 from tkinter import *
 from tkinter import ttk, messagebox
+import boto3
+from botocore.exceptions import ClientError
 
 class carpredict:
     def __init__(self,root):
@@ -204,10 +206,12 @@ class carpredict:
         today = "entry/" + today.strftime("%d_%m_%Y") + ".csv"
         #print(today)
         size = 0
+        flag=0
         with open(today, 'a+') as file:
             writer = csv.writer(file)
             if os.path.getsize(today) == 0:
                 writer.writerow(['VEHICLE_NUMBER', 'ENTRY_TIME', 'EXIT_TIME'])
+                flag=1
             size = os.path.getsize(today)
         #print(os.path.getsize(today))
         global entry_list
@@ -262,6 +266,21 @@ class carpredict:
             writer = csv.writer(file)
             for i in entry_list:
                 writer.writerow(i)
+
+        Access_key_ID = 'AKIA3YJBIIAFWG56AJPE'
+        Secret_access_key = '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'
+        bucket_name = 'smartauthorizingsys'
+        client_s3 = boto3.client('s3', aws_access_key_id=Access_key_ID, aws_secret_access_key=Secret_access_key)
+
+        try:
+            client_s3.upload_file('C:/Users/HP/PycharmProjects/FontendProjectH/entry/08_08_2022.csv',
+                                  'sasvehicle', '08_08_2022.csv')
+        except ClientError as e:
+            print(e)
+        except Exception as e:
+            print(e)
+        if flag==1:
+            os.remove('C:/Users/HP/PycharmProjects/FontendProjectH/entry/07_08_2022.csv')
 
         cv2.destroyAllWindows()
         cap.release()

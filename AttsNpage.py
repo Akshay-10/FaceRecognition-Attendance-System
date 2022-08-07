@@ -1,10 +1,16 @@
 from tkinter import *
 from tkinter import ttk
+import os
+import boto3
+import numpy
 from PIL import Image, ImageTk
 from tkinter import messagebox
 import mysql.connector
 import customtkinter
 from face_capture import facecap
+from numpy import load
+from numpy import save
+from numpy import asarray
 
 
 class attendance:
@@ -50,7 +56,7 @@ class attendance:
 
         head = Label(self.root, text="EMPLOYEE DETAILS", font=("Tahoma", 25, "bold"), bg="#263238", fg="white")
         head.place(x=0, y=120, width=1530, height=40)
-        back=customtkinter.CTkButton(self.root, text="Back", text_font=("Tahoma", 10, "bold"),bg_color="#263238",fg_color="#64b5f6",command=root.destroy)
+        back=customtkinter.CTkButton(self.root, text="Back", text_font=("Tahoma", 10, "bold"),bg_color="#263238",fg_color="#64b5f6",command=self.back)
         back.place(x=1200,y=126)
 
         frame = Frame(self.root, bd=2)
@@ -160,10 +166,10 @@ class attendance:
         self.photo=Label(RFrame2,image=self.photoimg3,background="white",width=140,height=160)
         self.photo.grid(row=0,column=0)
 
-        btnphto = customtkinter.CTkButton(RFrame1, text="Take Photo",command=lambda :self.facecaps(empbox.get(),0),fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=150,cursor="hand2")
+        btnphto = customtkinter.CTkButton(RFrame1, text="Take Photo",command=lambda :self.facecaps(empbox.get(),empnmbox.get(),0),fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=150,cursor="hand2")
         btnphto.place(x=10,y=180)
 
-        btnphto =customtkinter.CTkButton(RFrame1, text="Update Photo",command=lambda :self.facecaps(empbox.get(),1),fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=150,cursor="hand2")
+        btnphto =customtkinter.CTkButton(RFrame1, text="Update Photo",command=lambda :self.facecaps(empbox.get(),empnmbox.get(),1),fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=150,cursor="hand2")
         btnphto.place(x=200,y=180)
 
         btnsave = customtkinter.CTkButton(RFrame1, text="Save", command=self.add_data,fg_color="#fb341c",text_font=("Tahoma", 10,"bold"), width=150,cursor="hand2")
@@ -220,7 +226,14 @@ class attendance:
         self.detailtbl.pack(fill=BOTH, expand=1)
         self.detailtbl.bind("<ButtonRelease>", self.get_cursor)
         self.fetch_data()
-
+    def back(self):
+        try:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            image_dir = os.path.join(base_dir, "images/label_img.jpeg")
+            os.remove(image_dir)
+        except FileNotFoundError as e:
+            pass
+        self.root.destroy()
     def add_data(self):
         if self.DEPARTMENT.get() == "Select Department" or self.NAME.get() == "" or self.EMPLOYEE_ID.get() == "":
             messagebox.showerror("Error", "All Fields Required", parent=self.root)
@@ -298,7 +311,7 @@ class attendance:
                     conn = mysql.connector.connect(user='adminuser', password='Akshay10', host='35.90.7.49',
                                                    database='sas',
                                                    port='3306')
-                    '''conn = mysql.connector.connect(user='root', password='password', host='localhost', database='sas', auth_plugin=' caching_sha2_password')'''
+
                     my_cursor = conn.cursor()
                     my_cursor.execute("update employee set NAME=%s,DEPARTMENT=%s,DESGNATION=%s,JOINING_MONTH=%s,DOB=%s,GENDER=%s,EMAIL=%s,MARTIAL_STATUS=%s,NATIONALITY=%s,BLOOD_GROUP=%s,PHONE_NUMBER=%s,ADDRESS=%s WHERE (EMPLOYEE_ID=%s)",(
                             self.NAME.get(),
@@ -326,6 +339,7 @@ class attendance:
                 messagebox.showerror("Error", f"Due To:{str(ex)}", parent=self.root)
 
     def delete_data(self):
+        global conn
         if self.EMPLOYEE_ID.get() == "":
             messagebox.showerror("Error", "Employee ID must be required", parent=self.root)
         else:
@@ -339,6 +353,22 @@ class attendance:
                     sql = "delete from employee where employee_id=%s"
                     val = (self.EMPLOYEE_ID.get(),)
                     my_cursor.execute(sql, val)
+                    if my_cursor.rowcount>=1:
+                        file=str(val[0])+".jpeg"
+                        Access_key_ID = 'AKIA3YJBIIAFWG56AJPE'
+                        Secret_access_key = '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'
+                        bucket_name = 'smartauthorizingsys'
+                        client_s3 = boto3.client('s3', aws_access_key_id=Access_key_ID,
+                                             aws_secret_access_key=Secret_access_key)
+                        client_s3.delete_object(Bucket=bucket_name, Key=file)
+                        face_encode = load('face.npy', allow_pickle=True)
+                        for i in range(0,len(face_encode)):
+                            if(face_encode[i][0]==val[0]):
+                                face_encode=numpy.delete(face_encode,(i),axis=0)
+                                break
+                        print(face_encode)
+                        save('face.npy',face_encode)
+                        self.reset_data()
                 else:
                     if not delete:
                         return
@@ -367,14 +397,22 @@ class attendance:
         attendance.choose(self,1)
 
     def choose(self,value):
-        path="images\\"+str(value)+".jpeg"
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        image_dir = os.path.join(base_dir, "images/label_img.jpeg")
+        file=str(value)+".jpeg"
+        Access_key_ID = 'AKIA3YJBIIAFWG56AJPE'
+        Secret_access_key = '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'
+        bucket_name = 'smartauthorizingsys'
+        client_s3 = boto3.client('s3', aws_access_key_id=Access_key_ID, aws_secret_access_key=Secret_access_key)
+        client_s3.download_file(bucket_name, file, image_dir)
+        path = "images/label_img.jpeg"
         opimg = ImageTk.PhotoImage(Image.open(path).resize((140,160),Image.Resampling.LANCZOS))
         self.photo.configure(image=opimg)
         self.photo.image=opimg
 
-    def facecaps(self,value,i):
+    def facecaps(self,value,name1,i):
         self.new_window2=Toplevel(self.root)
-        facecap.add_img(self.new_window2,value,i)
+        facecap.add_img(self.new_window2,value,name1,i)
         attendance.choose(self,value)
 
 if __name__ == '__main__':
