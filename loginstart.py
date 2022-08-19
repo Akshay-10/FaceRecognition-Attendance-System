@@ -26,7 +26,7 @@ class login_design():
         xbut = customtkinter.CTkButton(frame1, text='x', text_font=("Tahoma", 10, "bold"), command=root.destroy,text_color='#fa333e',bg_color="#263238", fg_color="#263238", width=5)
         xbut.place(x=1072, y=0)
 
-####################
+
         signuptxt=customtkinter.CTkLabel(frame1,text="Sign in",text_font=("Tahoma",15,"bold"),fg_color="#263238",text_color="white")
         signuptxt.place(x=605,y=114)
 
